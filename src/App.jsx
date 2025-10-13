@@ -39,9 +39,9 @@ export default function App() {
           {user && <Header />}
 
           {/* Main content */}
-          <main className="flex-1 p-10 bg-gray-50">
+          <main className="flex-1 p-11 bg-gray-50">
             <Routes>
-              {/* Default route */}
+           
               <Route
                 path="/"
                 element={user ? <Navigate to="/dashboard" replace /> : <Login />}
