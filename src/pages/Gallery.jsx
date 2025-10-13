@@ -1,258 +1,310 @@
+"use client";
 import React, { useState } from "react";
-import { FaEdit, FaTrash, FaPlus, FaSave, FaTimes } from "react-icons/fa";
+import { FaBook, FaCrown, FaEdit, FaTrash, FaPlus, FaSave, FaTimes, FaUser } from "react-icons/fa";
 
-const initialFeaturesA = [
-  { id: 1, title: "Feature A1", description: "Description A1" },
-  { id: 2, title: "Feature A2", description: "Description A2" },
+const initialLiveData = [
+  { id: 1, user: "Mem***9FO", amount: "₹2,400.00", game: "Vegas Nights" },
+  { id: 2, user: "Mem***FU6", amount: "₹1,500.00", game: "Baccarat Supreme" },
+  { id: 3, user: "Mem***LPA", amount: "₹5,250.00", game: "Treasures of Aztec" },
 ];
 
-const initialFeaturesB = [
-  { id: 1, title: "Feature B1", description: "Description B1" },
-  { id: 2, title: "Feature B2", description: "Description B2" },
+const initialTopEarners = [
+  { id: 1, name: "Mem****21M", amount: "₹7,142,199.30", color: "yellow" },
+  { id: 2, name: "Mem****MYM", amount: "₹7,104,483.85", color: "gray" },
+  { id: 3, name: "Mem****74A", amount: "₹7,032,469.04", color: "orange" },
 ];
 
-export default function TwoFeatureTables() {
-  const [featuresA, setFeaturesA] = useState(initialFeaturesA);
-  const [featuresB, setFeaturesB] = useState(initialFeaturesB);
+const colorMap = {
+  yellow: "text-yellow-400",
+  gray: "text-gray-400",
+  orange: "text-orange-400",
+};
 
-  const [editingA, setEditingA] = useState(null);
-  const [editingB, setEditingB] = useState(null);
+export default function LiveAndGalleryCMS() {
+  const [liveData, setLiveData] = useState(initialLiveData);
+  const [topEarners, setTopEarners] = useState(initialTopEarners);
 
-  const [showAddA, setShowAddA] = useState(false);
-  const [showAddB, setShowAddB] = useState(false);
+  const [editingLiveId, setEditingLiveId] = useState(null);
+  const [editingTopId, setEditingTopId] = useState(null);
 
-  const [newFeatureA, setNewFeatureA] = useState({ title: "", description: "" });
-  const [newFeatureB, setNewFeatureB] = useState({ title: "", description: "" });
+  const [newLive, setNewLive] = useState({ user: "", amount: "", game: "" });
+  const [newTop, setNewTop] = useState({ name: "", amount: "", color: "yellow" });
 
-  const [editFormA, setEditFormA] = useState({ title: "", description: "" });
-  const [editFormB, setEditFormB] = useState({ title: "", description: "" });
-
-  // Delete handlers
-  const handleDeleteA = (id) => {
-    setFeaturesA(featuresA.filter(f => f.id !== id));
-    if (editingA === id) setEditingA(null);
-  };
-  const handleDeleteB = (id) => {
-    setFeaturesB(featuresB.filter(f => f.id !== id));
-    if (editingB === id) setEditingB(null);
+  const handleLiveChange = (id, field, value) => {
+    setLiveData((old) => old.map((item) => (item.id === id ? { ...item, [field]: value } : item)));
   };
 
-  // Start edit
-  const startEditA = (feature) => {
-    setEditingA(feature.id);
-    setEditFormA({ title: feature.title, description: feature.description });
-  };
-  const startEditB = (feature) => {
-    setEditingB(feature.id);
-    setEditFormB({ title: feature.title, description: feature.description });
+  const handleTopChange = (id, field, value) => {
+    setTopEarners((old) => old.map((item) => (item.id === id ? { ...item, [field]: value } : item)));
   };
 
-  // Cancel edit
-  const cancelEditA = () => setEditingA(null);
-  const cancelEditB = () => setEditingB(null);
+  const handleDeleteLive = (id) => setLiveData((old) => old.filter((item) => item.id !== id));
+  const handleDeleteTop = (id) => setTopEarners((old) => old.filter((item) => item.id !== id));
 
-  // Save edit
-  const saveEditA = (id) => {
-    if (!editFormA.title.trim() || !editFormA.description.trim()) {
-      alert("Fill all fields");
-      return;
-    }
-    setFeaturesA(featuresA.map(f => f.id === id ? { ...f, ...editFormA } : f));
-    setEditingA(null);
-  };
-  const saveEditB = (id) => {
-    if (!editFormB.title.trim() || !editFormB.description.trim()) {
-      alert("Fill all fields");
-      return;
-    }
-    setFeaturesB(featuresB.map(f => f.id === id ? { ...f, ...editFormB } : f));
-    setEditingB(null);
+  const handleAddLive = () => {
+    if (!newLive.user || !newLive.amount || !newLive.game) return alert("Fill all live fields!");
+    setLiveData((old) => [...old, { ...newLive, id: old.length + 1 }]);
+    setNewLive({ user: "", amount: "", game: "" });
   };
 
-  // Add new feature
-  const addFeatureA = () => {
-    if (!newFeatureA.title.trim() || !newFeatureA.description.trim()) {
-      alert("Fill all fields");
-      return;
-    }
-    setFeaturesA([...featuresA, { ...newFeatureA, id: Date.now() }]);
-    setNewFeatureA({ title: "", description: "" });
-    setShowAddA(false);
-  };
-  const addFeatureB = () => {
-    if (!newFeatureB.title.trim() || !newFeatureB.description.trim()) {
-      alert("Fill all fields");
-      return;
-    }
-    setFeaturesB([...featuresB, { ...newFeatureB, id: Date.now() }]);
-    setNewFeatureB({ title: "", description: "" });
-    setShowAddB(false);
-  };
-
-  // Render rows for a table
-  const renderRows = (features, editingId, editForm, setEditForm, startEdit, cancelEdit, saveEdit, handleDelete) => {
-    return features.map(feature => {
-      if (editingId === feature.id) {
-        return (
-          <tr key={feature.id} className="bg-gray-800">
-            <td className="border px-3 py-2">{feature.id}</td>
-            <td className="border px-3 py-2">
-              <input
-                type="text"
-                value={editForm.title}
-                onChange={e => setEditForm(prev => ({ ...prev, title: e.target.value }))}
-                className="w-full bg-gray-900 text-white px-2 py-1 rounded border border-gray-700"
-              />
-            </td>
-            <td className="border px-3 py-2">
-              <input
-                type="text"
-                value={editForm.description}
-                onChange={e => setEditForm(prev => ({ ...prev, description: e.target.value }))}
-                className="w-full bg-gray-900 text-white px-2 py-1 rounded border border-gray-700"
-              />
-            </td>
-            <td className="border px-3 py-2 flex gap-2 justify-center">
-              <button
-                onClick={() => saveEdit(feature.id)}
-                className="bg-green-600 px-3 py-1 rounded hover:bg-green-700 text-white flex items-center gap-1"
-                title="Save"
-              >
-                <FaSave />
-              </button>
-              <button
-                onClick={cancelEdit}
-                className="bg-red-600 px-3 py-1 rounded hover:bg-red-700 text-white flex items-center gap-1"
-                title="Cancel"
-              >
-                <FaTimes />
-              </button>
-            </td>
-          </tr>
-        );
-      }
-   return (
-        <tr key={feature.id} className="hover:bg-gray-700">
-          <td className="border px-3 py-2 text-center">{feature.id}</td>
-          <td className="border px-3 py-2">{feature.title}</td>
-          <td className="border px-3 py-2">{feature.description}</td>
-          <td className="border px-3 py-2 flex gap-2 justify-center">
-            <button
-              onClick={() => startEdit(feature)}
-              className="text-blue-400 hover:text-blue-600"
-              title="Edit"
-            >
-              <FaEdit />
-            </button>
-            <button
-              onClick={() => handleDelete(feature.id)}
-              className="text-red-400 hover:text-red-600"
-              title="Delete"
-            >
-              <FaTrash />
-            </button>
-          </td>
-        </tr>
-      );
-    });
-  };
-
-  const renderAddRow = (showAdd, setShowAdd, newFeature, setNewFeature, addFeature, colSpan) => {
-    if (!showAdd) {
-      return (
-        <tr>
-          <td colSpan={colSpan} className="border px-3 py-2 text-center">
-            <button
-              onClick={() => setShowAdd(true)}
-              className="flex items-center justify-center gap-2 bg-green-600 hover:bg-green-700 text-white px-4 py-2 rounded"
-            >
-              <FaPlus /> Add New
-            </button>
-          </td>
-        </tr>
-      );
-    }
-
-    return (
-      <tr className="bg-gray-800">
-        <td className="border px-3 py-2 text-center">#</td>
-        <td className="border px-3 py-2">
-          <input
-            type="text"
-            value={newFeature.title}
-            onChange={e => setNewFeature(prev => ({ ...prev, title: e.target.value }))}
-            className="w-full bg-gray-900 text-white px-2 py-1 rounded border border-gray-700"
-            placeholder="Title"
-          />
-        </td>
-        <td className="border px-3 py-2">
-          <input
-            type="text"
-            value={newFeature.description}
-            onChange={e => setNewFeature(prev => ({ ...prev, description: e.target.value }))}
-            className="w-full bg-gray-900 text-white px-2 py-1 rounded border border-gray-700"
-            placeholder="Description"
-          />
-        </td>
-        <td className="border px-3 py-2 flex gap-2 justify-center">
-          <button
-            onClick={addFeature}
-            className="bg-green-600 px-3 py-1 rounded hover:bg-green-700 text-white flex items-center gap-1"
-            title="Add"
-          >
-            <FaSave />
-          </button>
-          <button
-            onClick={() => setShowAdd(false)}
-            className="bg-red-600 px-3 py-1 rounded hover:bg-red-700 text-white flex items-center gap-1"
-            title="Cancel"
-          >
-            <FaTimes />
-          </button>
-        </td>
-      </tr>
-    );
+  const handleAddTop = () => {
+    if (!newTop.name || !newTop.amount) return alert("Fill all top earner fields!");
+    setTopEarners((old) => [...old, { ...newTop, id: old.length + 1 }]);
+    setNewTop({ name: "", amount: "", color: "yellow" });
   };
 
   return (
-    <div className="p-6 bg-[#0b0f19] min-h-screen text-white max-w-7xl mx-auto">
-      <h1 className="text-3xl font-bold mb-8">Feature Lists</h1>
+    <section className="bg-[#0b0f19] text-white max-w-5xl mx-auto p-6 rounded-lg">
+      {/* Live Winning Feed */}
+      <div className="mb-10">
+        <h2 className="flex items-center text-2xl font-bold mb-4 gap-2">
+          <FaBook className="text-red-500" />
+          Live Winning Feed
+        </h2>
 
-      <div className="mb-12">
-        <h2 className="text-2xl font-semibold mb-4">Feature List A</h2>
-        <table className="w-full table-auto border-collapse border border-gray-700">
+        <table className="w-full text-left border-collapse">
           <thead>
-            <tr className="bg-gray-900">
-              <th className="border border-gray-700 px-3 py-2">ID</th>
-              <th className="border border-gray-700 px-3 py-2">Title</th>
-              <th className="border border-gray-700 px-3 py-2">Description</th>
-              <th className="border border-gray-700 px-3 py-2">Actions</th>
+            <tr className="border-b border-gray-700">
+              <th className="py-2">User</th>
+              <th>Amount</th>
+              <th>Game</th>
+              <th className="w-24">Actions</th>
             </tr>
           </thead>
           <tbody>
-            {renderRows(featuresA, editingA, editFormA, setEditFormA, startEditA, cancelEditA, saveEditA, handleDeleteA)}
-            {renderAddRow(showAddA, setShowAddA, newFeatureA, setNewFeatureA, addFeatureA, 4)}
+            {liveData.map((item) => (
+              <tr key={item.id} className="border-b border-gray-800">
+                <td className="py-2 flex items-center gap-2">
+                  <FaUser className="text-gray-400" />
+                  {editingLiveId === item.id ? (
+                    <input
+                      type="text"
+                      value={item.user}
+                      onChange={(e) => handleLiveChange(item.id, "user", e.target.value)}
+                      className="bg-[#2a2f4a] rounded p-1 text-white text-sm w-full"
+                    />
+                  ) : (
+                    item.user
+                  )}
+                </td>
+                <td>
+                  {editingLiveId === item.id ? (
+                    <input
+                      type="text"
+                      value={item.amount}
+                      onChange={(e) => handleLiveChange(item.id, "amount", e.target.value)}
+                      className="bg-[#2a2f4a] rounded p-1 text-yellow-400 font-semibold text-sm w-full"
+                    />
+                  ) : (
+                    <span className="text-yellow-400 font-semibold">{item.amount}</span>
+                  )}
+                </td>
+                <td>
+                  {editingLiveId === item.id ? (
+                    <input
+                      type="text"
+                      value={item.game}
+                      onChange={(e) => handleLiveChange(item.id, "game", e.target.value)}
+                      className="bg-[#2a2f4a] rounded p-1 text-white text-sm w-full"
+                    />
+                  ) : (
+                    item.game
+                  )}
+                </td>
+                <td className="flex gap-2">
+                  {editingLiveId === item.id ? (
+                    <>
+                      <button onClick={() => setEditingLiveId(null)} className="text-green-500" title="Save">
+                        <FaSave />
+                      </button>
+                      <button onClick={() => setEditingLiveId(null)} className="text-gray-400" title="Cancel">
+                        <FaTimes />
+                      </button>
+                    </>
+                  ) : (
+                    <>
+                      <button onClick={() => setEditingLiveId(item.id)} className="text-yellow-400" title="Edit">
+                        <FaEdit />
+                      </button>
+                      <button onClick={() => handleDeleteLive(item.id)} className="text-red-600" title="Delete">
+                        <FaTrash />
+                      </button>
+                    </>
+                  )}
+                </td>
+              </tr>
+            ))}
+
+            {/* Add New Live */}
+            <tr>
+              <td>
+                <input
+                  type="text"
+                  placeholder="User"
+                  value={newLive.user}
+                  onChange={(e) => setNewLive({ ...newLive, user: e.target.value })}
+                  className="bg-[#2a2f4a] rounded p-1 text-white text-sm w-full"
+                />
+              </td>
+              <td>
+                <input
+                  type="text"
+                  placeholder="Amount"
+                  value={newLive.amount}
+                  onChange={(e) => setNewLive({ ...newLive, amount: e.target.value })}
+                  className="bg-[#2a2f4a] rounded p-1 text-yellow-400 font-semibold text-sm w-full"
+                />
+              </td>
+              <td>
+                <input
+                  type="text"
+                  placeholder="Game"
+                  value={newLive.game}
+                  onChange={(e) => setNewLive({ ...newLive, game: e.target.value })}
+                  className="bg-[#2a2f4a] rounded p-1 text-white text-sm w-full"
+                />
+              </td>
+              <td>
+                <button
+                  onClick={handleAddLive}
+                  className="bg-red-600 hover:bg-red-700 rounded py-1 px-3 text-sm font-semibold"
+                >
+                  <FaPlus /> Add
+                </button>
+              </td>
+            </tr>
           </tbody>
         </table>
       </div>
 
+      {/* Top Earners */}
       <div>
-        <h2 className="text-2xl font-semibold mb-4">Feature List B</h2>
-        <table className="w-full table-auto border-collapse border border-gray-700">
+        <h2 className="flex items-center text-2xl font-bold mb-4 gap-2">
+          <FaCrown className="text-red-500" />
+          Today's Top Earners
+        </h2>
+
+        <table className="w-full text-left border-collapse">
           <thead>
-            <tr className="bg-gray-900">
-              <th className="border border-gray-700 px-3 py-2">ID</th>
-              <th className="border border-gray-700 px-3 py-2">Title</th>
-              <th className="border border-gray-700 px-3 py-2">Description</th>
-              <th className="border border-gray-700 px-3 py-2">Actions</th>
+            <tr className="border-b border-gray-700">
+              <th className="py-2">Name</th>
+              <th>Amount</th>
+              <th>Color</th>
+              <th className="w-24">Actions</th>
             </tr>
           </thead>
           <tbody>
-            {renderRows(featuresB, editingB, editFormB, setEditFormB, startEditB, cancelEditB, saveEditB, handleDeleteB)}
-            {renderAddRow(showAddB, setShowAddB, newFeatureB, setNewFeatureB, addFeatureB, 4)}
+            {topEarners.map((earner) => (
+              <tr key={earner.id} className="border-b border-gray-800">
+                <td>
+                  {editingTopId === earner.id ? (
+                    <input
+                      type="text"
+                      value={earner.name}
+                      onChange={(e) => handleTopChange(earner.id, "name", e.target.value)}
+                      className="bg-[#2a2f4a] rounded p-1 text-white text-sm w-full"
+                    />
+                  ) : (
+                    <div className="flex items-center gap-2">
+                      <FaUser className="text-gray-400" />
+                      {earner.name}
+                    </div>
+                  )}
+                </td>
+                <td>
+                  {editingTopId === earner.id ? (
+                    <input
+                      type="text"
+                      value={earner.amount}
+                      onChange={(e) => handleTopChange(earner.id, "amount", e.target.value)}
+                      className="bg-[#2a2f4a] rounded p-1 text-yellow-400 font-semibold text-sm w-full"
+                    />
+                  ) : (
+                    <span className="text-yellow-400 font-semibold">{earner.amount}</span>
+                  )}
+                </td>
+                <td>
+                  {editingTopId === earner.id ? (
+                    <select
+                      value={earner.color}
+                      onChange={(e) => handleTopChange(earner.id, "color", e.target.value)}
+                      className="bg-[#2a2f4a] rounded p-1 text-white text-sm w-full"
+                    >
+                      <option value="yellow">Yellow</option>
+                      <option value="gray">Gray</option>
+                      <option value="orange">Orange</option>
+                    </select>
+                  ) : (
+                    <span className={colorMap[earner.color]}>{earner.color}</span>
+                  )}
+                </td>
+                <td className="flex gap-2">
+                  {editingTopId === earner.id ? (
+                    <>
+                      <button onClick={() => setEditingTopId(null)} className="text-green-500" title="Save">
+                        <FaSave />
+                      </button>
+                      <button onClick={() => setEditingTopId(null)} className="text-gray-400" title="Cancel">
+                        <FaTimes />
+                      </button>
+                    </>
+                  ) : (
+                    <>
+                      <button onClick={() => setEditingTopId(earner.id)} className="text-yellow-400" title="Edit">
+                        <FaEdit />
+                      </button>
+                      <button onClick={() => handleDeleteTop(earner.id)} className="text-red-600" title="Delete">
+                        <FaTrash />
+                      </button>
+                    </>
+                  )}
+                </td>
+              </tr>
+            ))}
+
+            {/* Add New Top Earner */}
+            <tr>
+              <td>
+                <input
+                  type="text"
+                  placeholder="Name"
+                  value={newTop.name}
+                  onChange={(e) => setNewTop({ ...newTop, name: e.target.value })}
+                  className="bg-[#2a2f4a] rounded p-1 text-white text-sm w-full"
+                />
+              </td>
+              <td>
+                <input
+                  type="text"
+                  placeholder="Amount"
+                  value={newTop.amount}
+                  onChange={(e) => setNewTop({ ...newTop, amount: e.target.value })}
+                  className="bg-[#2a2f4a] rounded p-1 text-yellow-400 font-semibold text-sm w-full"
+                />
+              </td>
+              <td>
+                <select
+                  value={newTop.color}
+                  onChange={(e) => setNewTop({ ...newTop, color: e.target.value })}
+                  className="bg-[#2a2f4a] rounded p-1 text-white text-sm w-full"
+                >
+                  <option value="yellow">Yellow</option>
+                  <option value="gray">Gray</option>
+                  <option value="orange">Orange</option>
+                </select>
+              </td>
+              <td>
+                <button
+                  onClick={handleAddTop}
+                  className="bg-red-600 hover:bg-red-700 rounded py-1 px-3 text-sm font-semibold"
+                >
+                  <FaPlus /> Add
+                </button>
+              </td>
+            </tr>
           </tbody>
         </table>
       </div>
-    </div>
+    </section>
   );
 }

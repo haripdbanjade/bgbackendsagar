@@ -1,49 +1,34 @@
-"use client";
-import React, { useState, useEffect } from "react";
-import { FaPlay } from "react-icons/fa";
+
+import React, { useState } from "react";
 
 export default function GameCMS() {
-  const [games, setGames] = useState([]);
+  const [games, setGames] = useState([
+    {
+      id: 1,
+      name: "Treasures of Aztec",
+      earning: "₹150000",
+      image: "/images/Aztecz.jpg",
+    },
+    {
+      id: 2,
+      name: "SevenSevenSeven",
+      earning: "₹200000",
+      image: "/images/77.jpg",
+    },
+    {
+      id: 3,
+      name: "Teen Patti",
+      earning: "₹95000",
+      image: "/images/tin.jpg",
+    },
+  ]);
+
   const [editId, setEditId] = useState(null);
   const [form, setForm] = useState({
     name: "",
     earning: "",
     image: "",
   });
-
-  // Load games from localStorage or use default
-  useEffect(() => {
-    const saved = localStorage.getItem("games");
-    if (saved) {
-      setGames(JSON.parse(saved));
-    } else {
-      setGames([
-        {
-          id: 1,
-          name: "Treasures of Aztec",
-          earning: "₹1,50,000",
-          image: "/images/Aztecz.jpg",
-        },
-        {
-          id: 2,
-          name: "SevenSevenSeven",
-          earning: "₹2,00,000",
-          image: "/images/77.jpg",
-        },
-        {
-          id: 3,
-          name: "Teen Patti",
-          earning: "₹95,000",
-          image: "/images/tin.jpg",
-        },
-      ]);
-    }
-  }, []);
-
-  // Save games to localStorage
-  useEffect(() => {
-    localStorage.setItem("games", JSON.stringify(games));
-  }, [games]);
 
   const resetForm = () => {
     setForm({ name: "", earning: "", image: "" });
@@ -53,6 +38,7 @@ export default function GameCMS() {
   const handleImageChange = (e) => {
     const file = e.target.files[0];
     if (!file) return;
+
     const reader = new FileReader();
     reader.onload = () => {
       setForm((prev) => ({ ...prev, image: reader.result }));
@@ -61,20 +47,25 @@ export default function GameCMS() {
   };
 
   const handleSave = () => {
-    if (!form.name || !form.earning || !form.image) {
-      alert("All fields are required");
+    const { name, earning, image } = form;
+
+    if (!name.trim() || !earning.trim() || !image) {
+      alert("All fields are required!");
       return;
     }
 
+    const newGame = {
+      id: editId || Date.now(),
+      name: name.trim(),
+      earning: earning.trim(),
+      image,
+    };
+
     if (editId) {
       setGames((prev) =>
-        prev.map((g) => (g.id === editId ? { ...g, ...form } : g))
+        prev.map((g) => (g.id === editId ? newGame : g))
       );
     } else {
-      const newGame = {
-        id: Date.now(),
-        ...form,
-      };
       setGames((prev) => [newGame, ...prev]);
     }
 
@@ -93,8 +84,15 @@ export default function GameCMS() {
   const handleDelete = (id) => {
     if (confirm("Are you sure you want to delete this game?")) {
       setGames((prev) => prev.filter((g) => g.id !== id));
+      if (editId === id) resetForm();
     }
   };
+
+  const sortedGames = [...games].sort((a, b) => {
+    const numA = parseInt(a.earning.replace(/[₹,]/g, ""));
+    const numB = parseInt(b.earning.replace(/[₹,]/g, ""));
+    return numB - numA;
+  });
 
   return (
     <div className="max-w-6xl mx-auto p-6 text-white font-sans bg-[#0d1117] min-h-screen">
@@ -102,24 +100,26 @@ export default function GameCMS() {
         <h1 className="text-3xl font-bold text-red-500">Game CMS</h1>
         <button
           onClick={resetForm}
-          className="bg-red-600 text-white px-4 py-2 rounded"
+          className="bg-red-600 hover:bg-red-700 transition text-white px-4 py-2 rounded"
         >
           Add New Game
         </button>
       </header>
 
       {/* Form */}
-      <div className="bg-gray-900 p-4 rounded mb-6">
+      <div className="bg-gray-900 p-4 rounded mb-6 shadow-lg">
         <div className="grid grid-cols-1 md:grid-cols-3 gap-4">
           <input
+            type="text"
             className="p-2 rounded bg-gray-800 text-white"
             placeholder="Game Name"
             value={form.name}
             onChange={(e) => setForm({ ...form, name: e.target.value })}
           />
           <input
+            type="text"
             className="p-2 rounded bg-gray-800 text-white"
-            placeholder="Earning"
+            placeholder="Earning (e.g. ₹120000)"
             value={form.earning}
             onChange={(e) => setForm({ ...form, earning: e.target.value })}
           />
@@ -130,13 +130,11 @@ export default function GameCMS() {
             onChange={handleImageChange}
           />
         </div>
-
-        {/* Preview image */}
         {form.image && (
           <img
             src={form.image}
             alt="Preview"
-            className="mt-4 w-40 h-24 object-cover rounded border"
+            className="mt-4 w-40 h-24 object-cover rounded border border-gray-700"
           />
         )}
 
@@ -144,23 +142,23 @@ export default function GameCMS() {
           {editId && (
             <button
               onClick={resetForm}
-              className="px-4 py-2 border rounded text-white"
+              className="px-4 py-2 border border-gray-600 rounded text-white hover:bg-gray-800 transition"
             >
               Cancel
             </button>
           )}
           <button
             onClick={handleSave}
-            className="px-4 py-2 bg-red-600 text-white rounded"
+            className="px-4 py-2 bg-red-600 hover:bg-red-700 transition text-white rounded"
           >
-            {editId ? "Update" : "Save"}
+            {editId ? "Update Game" : "Save Game"}
           </button>
         </div>
       </div>
 
       {/* Table */}
       <div className="overflow-x-auto">
-        <table className="w-full text-left border border-gray-700">
+        <table className="w-full text-left border border-gray-700 rounded">
           <thead className="bg-gray-800 text-gray-300">
             <tr>
               <th className="p-2 border border-gray-700">Image</th>
@@ -170,34 +168,35 @@ export default function GameCMS() {
             </tr>
           </thead>
           <tbody>
-            {games.map((game) => (
-              <tr key={game.id} className="hover:bg-gray-800">
-                <td className="p-2 border border-gray-700">
-                  <img
-                    src={game.image}
-                    alt={game.name}
-                    className="w-20 h-14 object-cover rounded"
-                  />
-                </td>
-                <td className="p-2 border border-gray-700">{game.name}</td>
-                <td className="p-2 border border-gray-700">{game.earning}</td>
-                <td className="p-2 border border-gray-700 space-x-2">
-                  <button
-                    onClick={() => handleEdit(game)}
-                    className="text-yellow-400 hover:underline"
-                  >
-                    Edit
-                  </button>
-                  <button
-                    onClick={() => handleDelete(game.id)}
-                    className="text-red-500 hover:underline"
-                  >
-                    Delete
-                  </button>
-                </td>
-              </tr>
-            ))}
-            {games.length === 0 && (
+            {sortedGames.length > 0 ? (
+              sortedGames.map((game) => (
+                <tr key={game.id} className="hover:bg-gray-800">
+                  <td className="p-2 border border-gray-700">
+                    <img
+                      src={game.image}
+                      alt={game.name}
+                      className="w-20 h-14 object-cover rounded"
+                    />
+                  </td>
+                  <td className="p-2 border border-gray-700">{game.name}</td>
+                  <td className="p-2 border border-gray-700">{game.earning}</td>
+                  <td className="p-2 border border-gray-700 space-x-4">
+                    <button
+                      onClick={() => handleEdit(game)}
+                      className="text-yellow-400 hover:underline"
+                    >
+                      Edit
+                    </button>
+                    <button
+                      onClick={() => handleDelete(game.id)}
+                      className="text-red-500 hover:underline"
+                    >
+                      Delete
+                    </button>
+                  </td>
+                </tr>
+              ))
+            ) : (
               <tr>
                 <td colSpan="4" className="text-center p-4 text-gray-500">
                   No games available.

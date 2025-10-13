@@ -10,6 +10,9 @@ import Gallery from './pages/Gallery';
 import About from "./pages/About";
 import Blog from './pages/Blog';
 import Spin from './pages/SpinWhell';
+
+import Payment from "./pages/Payment"
+
 import Feature from "./pages/Feature"
 
 import { useAuth } from './context/Authcontext';
@@ -46,7 +49,8 @@ export default function App() {
               {/* Public route */}
               <Route path="/login" element={user ? <Navigate to="/dashboard" /> : <Login />} />
 
-              {/* Protected routes */}
+
+
               <Route
                 path="/dashboard"
                 element={
@@ -63,6 +67,18 @@ export default function App() {
                   </ProtectedRoute>
                 }
               />
+
+
+               <Route
+                path="/payment"
+                element={
+                  <ProtectedRoute>
+                    <Payment />
+                  </ProtectedRoute>
+                }
+                
+              />
+
               <Route
                 path="/gallery"
                 element={
@@ -70,6 +86,7 @@ export default function App() {
                     <Gallery />
                   </ProtectedRoute>
                 }
+
               />
               <Route
                 path="/about"

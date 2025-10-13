@@ -1,5 +1,5 @@
 "use client";
-import { useRef, useState } from "react";
+import { useRef, useState, useEffect } from "react";
 
 export default function DynamicSpinWheel() {
   const [segments, setSegments] = useState([
@@ -28,8 +28,12 @@ export default function DynamicSpinWheel() {
 
     const randomIndex = Math.floor(Math.random() * segments.length);
     const spins = 360 * (4 + Math.random() * 3);
-    // Calculate final rotation so the segment lands under the pointer
-    const finalRotation = spins + randomIndex * segmentAngle + segmentAngle / 2;
+    // Calculate final rotation so the segment lands under the pointer (pointer at 0deg)
+    // We rotate the wheel clockwise, so subtract to align pointer with segment center
+    const finalRotation =
+      spins +
+      360 - // rotate so pointer at top (0deg)
+      (randomIndex * segmentAngle + segmentAngle / 2);
 
     if (wheelRef.current) {
       wheelRef.current.style.transition = "transform 4s ease-out";
@@ -40,7 +44,9 @@ export default function DynamicSpinWheel() {
         setResult(segments[randomIndex].label);
 
         // Lock wheel to final position without animation for next spin
-        const lockedRotation = (randomIndex * segmentAngle + segmentAngle / 2) % 360;
+        // Use modulo 360 to keep rotation within 0-360 range
+        const lockedRotation =
+          (360 - (randomIndex * segmentAngle + segmentAngle / 2)) % 360;
         wheelRef.current.style.transition = "none";
         wheelRef.current.style.transform = `rotate(${lockedRotation}deg)`;
       }, 4000);
@@ -49,11 +55,14 @@ export default function DynamicSpinWheel() {
 
   // Add new segment and start editing it immediately
   const addSegment = () => {
-    setSegments((prev) => [...prev, { label: "New Segment", color: "#888888" }]);
-    const newIndex = segments.length;
-    setEditIndex(newIndex);
-    setEditLabel("New Segment");
-    setEditColor("#888888");
+    if (isSpinning) return; // Prevent changes while spinning
+    setSegments((prev) => {
+      const newSegments = [...prev, { label: "New Segment", color: "#888888" }];
+      setEditIndex(newSegments.length - 1);
+      setEditLabel("New Segment");
+      setEditColor("#888888");
+      return newSegments;
+    });
   };
 
   // Save edited segment
@@ -78,15 +87,34 @@ export default function DynamicSpinWheel() {
   // Delete segment
   const deleteSegment = (index) => {
     if (!confirm("Delete this segment?")) return;
-    setSegments((prev) => prev.filter((_, i) => i !== index));
-    if (editIndex === index) cancelEdit();
+    setSegments((prev) => {
+      const newSegments = prev.filter((_, i) => i !== index);
+      // Adjust editIndex if needed
+      if (editIndex !== null) {
+        if (editIndex === index) {
+          cancelEdit();
+        } else if (editIndex > index) {
+          setEditIndex(editIndex - 1);
+        }
+      }
+      return newSegments;
+    });
   };
 
   // Start editing segment
   const editSegment = (index) => {
+    if (isSpinning) return; // Prevent editing while spinning
     setEditIndex(index);
     setEditLabel(segments[index].label);
     setEditColor(segments[index].color);
+  };
+
+  // Keyboard accessibility for spin button
+  const handleSpinKeyDown = (e) => {
+    if (e.key === "Enter" || e.key === " ") {
+      e.preventDefault();
+      spinWheel();
+    }
   };
 
   return (
@@ -99,9 +127,21 @@ export default function DynamicSpinWheel() {
           ref={wheelRef}
           viewBox="0 0 500 500"
           className="w-full h-full"
-          style={{ transformOrigin: "50% 50%" }}
+          style={{ transformOrigin: "50% 50%", cursor: isSpinning || segments.length === 0 ? "not-allowed" : "pointer" }}
+          tabIndex={0}
+          role="button"
+          aria-label="Spin the wheel"
+          onClick={spinWheel}
+          onKeyDown={handleSpinKeyDown}
         >
-          <circle cx="250" cy="250" r="245" fill="#f3f4f6" stroke="#ccc" strokeWidth="2" />
+          <circle
+            cx="250"
+            cy="250"
+            r="245"
+            fill="#f3f4f6"
+            stroke="#ccc"
+            strokeWidth="2"
+          />
           {segments.map(({ label, color }, i) => {
             const startAngle = segmentAngle * i;
             const endAngle = startAngle + segmentAngle;
@@ -152,8 +192,7 @@ export default function DynamicSpinWheel() {
             cy="250"
             r="40"
             fill="#3b82f6"
-            cursor={isSpinning || segments.length === 0 ? "not-allowed" : "pointer"}
-            onClick={spinWheel}
+            pointerEvents="none"
           />
           <text
             x="250"
@@ -162,26 +201,32 @@ export default function DynamicSpinWheel() {
             fontWeight="700"
             fontSize="16"
             textAnchor="middle"
-            cursor={isSpinning || segments.length === 0 ? "not-allowed" : "pointer"}
-            onClick={spinWheel}
+            pointerEvents="none"
             style={{ userSelect: "none" }}
           >
             {isSpinning ? "Spinning" : "SPIN"}
           </text>
         </svg>
+        {/* Pointer */}
         <div className="absolute top-0 left-1/2 w-0 h-0 border-l-[10px] border-r-[10px] border-b-[16px] border-b-blue-600 transform -translate-x-1/2 -translate-y-1/2" />
       </div>
 
       {/* Result */}
       {result && (
-        <p className="mb-4 text-lg font-semibold text-green-700 text-center">🎉 You won: {result}</p>
+        <p className="mb-4 text-lg font-semibold text-green-700 text-center">
+          🎉 You won: {result}
+        </p>
       )}
 
       {/* Segment Controls */}
       <div className="w-full">
         <button
           onClick={addSegment}
-          className="mb-4 px-4 py-2 bg-blue-600 text-white rounded hover:bg-blue-700"
+          className={`mb-4 px-4 py-2 text-white rounded hover:bg-blue-700 ${
+            isSpinning ? "bg-blue-400 cursor-not-allowed" : "bg-blue-600"
+          }`}
+          aria-label="Add segment"
+          disabled={isSpinning}
         >
           + Add Segment
         </button>
@@ -195,9 +240,21 @@ export default function DynamicSpinWheel() {
             key={i}
             className="flex items-center justify-between mb-2 bg-gray-100 rounded p-2 cursor-pointer"
             onClick={() => editSegment(i)}
+            role="button"
+            tabIndex={0}
+            onKeyDown={(e) => {
+              if (e.key === "Enter" || e.key === " ") {
+                e.preventDefault();
+                editSegment(i);
+              }
+            }}
           >
             <div className="flex items-center space-x-3">
-              <div className="w-6 h-6 rounded border" style={{ backgroundColor: color }} />
+              <div
+                className="w-6 h-6 rounded border"
+                style={{ backgroundColor: color }}
+                aria-label={`Segment color ${color}`}
+              />
               <span>{label}</span>
             </div>
             <button
@@ -207,6 +264,7 @@ export default function DynamicSpinWheel() {
               }}
               className="text-red-600 font-bold text-lg"
               title="Delete Segment"
+              aria-label={`Delete segment ${label}`}
             >
               &times;
             </button>
@@ -217,15 +275,29 @@ export default function DynamicSpinWheel() {
         {editIndex !== null && (
           <div className="mt-4 p-4 border rounded bg-gray-50">
             <h3 className="font-semibold mb-2">Edit Segment</h3>
-            <label className="block mb-1 text-sm font-medium">Label</label>
+            <label
+              className="block mb-1 text-sm font-medium"
+              htmlFor="edit-label"
+            >
+              Label
+            </label>
             <input
+              id="edit-label"
               type="text"
               value={editLabel}
               onChange={(e) => setEditLabel(e.target.value)}
               className="w-full p-2 border rounded mb-3"
+              aria-required="true"
+              autoFocus
             />
-            <label className="block mb-1 text-sm font-medium">Color</label>
+            <label
+              className="block mb-1 text-sm font-medium"
+              htmlFor="edit-color"
+            >
+              Color
+            </label>
             <input
+              id="edit-color"
               type="color"
               value={editColor}
               onChange={(e) => setEditColor(e.target.value)}
@@ -235,12 +307,14 @@ export default function DynamicSpinWheel() {
               <button
                 onClick={saveSegment}
                 className="px-4 py-2 bg-green-600 text-white rounded hover:bg-green-700"
+                aria-label="Save segment"
               >
                 Save
               </button>
               <button
                 onClick={cancelEdit}
                 className="px-4 py-2 bg-gray-300 rounded hover:bg-gray-400"
+                aria-label="Cancel editing"
               >
                 Cancel
               </button>

@@ -1,4 +1,6 @@
-// Dashboard.jsx
+
+
+
 import React, { useEffect, useState } from "react";
 import { useNavigate } from "react-router-dom";
 import { FaUserCircle } from "react-icons/fa";
@@ -41,7 +43,7 @@ const Dashboard = () => {
 
         <div className="mt-4 grid gap-4 grid-cols-1 sm:grid-cols-2">
           <button onClick={() => navigate("/profile")} className="bg-white text-blue-600 py-2 px-4 rounded-lg font-semibold hover:bg-gray-200 transition">View Profile</button>
-          <button onClick={() => navigate("/services")} className="bg-white text-purple-600 py-2 px-4 rounded-lg font-semibold hover:bg-gray-200 transition">Manage Services</button>
+          <button onClick={() => navigate("/services")} className="bg-white text-purple-600 py-2 px-4 rounded-lg font-semibold hover:bg-gray-200 transition">Manage Feature</button>
         </div>
 
 
