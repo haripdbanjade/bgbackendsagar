@@ -1,4 +1,4 @@
-import React from 'react';
+
 import { BrowserRouter, Routes, Route, Navigate } from 'react-router-dom';
 
 import Sidebar from './component/Sidebar';
@@ -17,15 +17,15 @@ import { useAuth } from './hooks/useAuth';
 function ProtectedRoute({ children }) {
   const { user } = useAuth();
   if (!user) {
-    // Not logged in, redirect to login page
-    return <Navigate to="/" replace />; // "/" is your login route now
+  
+    return <Navigate to="/" replace />; 
   }
-  // Logged in, show children
+
   return children;
 }
 
 export default function App() {
-  // Destructure user from your auth hook
+
   const { user } = useAuth();
 
   return (
