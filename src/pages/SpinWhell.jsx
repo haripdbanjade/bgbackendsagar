@@ -1,5 +1,5 @@
 "use client";
-import { useRef, useState, useEffect } from "react";
+import { useRef, useState } from "react";
 
 export default function DynamicSpinWheel() {
   const [segments, setSegments] = useState([

@@ -14,8 +14,9 @@ import Spin from './pages/SpinWhell';
 import Payment from "./pages/Payment"
 
 import Feature from "./pages/Feature"
+import { useAuth } from './hooks/useAuth';
 
-import { useAuth } from './context/Authcontext';
+
 
 function ProtectedRoute({ children }) {
   const { user } = useAuth();

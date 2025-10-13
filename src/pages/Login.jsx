@@ -1,7 +1,8 @@
 import { useState } from "react";
 import { useNavigate } from "react-router-dom";
-import { useAuth } from "../context/AuthContext";
+
 import { FcGoogle } from "react-icons/fc";
+import { useAuth } from "../hooks/useAuth";
 
 export default function Login() {
   const { login } = useAuth();

@@ -1,7 +1,8 @@
-import { useAuth } from "../context/AuthContext";
+
 import { useNavigate } from "react-router-dom";
 import { useEffect } from "react";
 import { FaUserCircle, FaSignOutAlt, FaCrown } from "react-icons/fa";
+import { useAuth } from "../hooks/useAuth";
 
 export default function Dashboard() {
   const { user, logout } = useAuth();
