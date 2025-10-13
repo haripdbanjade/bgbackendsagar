@@ -16,38 +16,38 @@ export default function Dashboard() {
   if (!user) return null;
 
   return (
-    <div className="min-h-screen flex flex-col items-center justify-center bg-red-600 text-white relative overflow-hidden">
-      {/* Floating gradient orbs */}
-      <div className="absolute top-10 left-10 w-48 h-48 bg-purple-400/40 blur-3xl rounded-full"></div>
-      <div className="absolute bottom-10 right-10 w-56 h-56 bg-pink-400/40 blur-3xl rounded-full"></div>
-
-      <div className="relative bg-white/10 backdrop-blur-xl border border-white/20 shadow-2xl rounded-3xl px-12 py-10 w-[90%] max-w-lg text-center animate-fade-in">
+    <div className="flex items-center justify-center min-h-screen bg-white p-4">
+      {/* Dashboard Card */}
+      <div className="bg-red-500 border border-gray-200 shadow-lg rounded-3xl px-6 sm:px-10 py-8 sm:py-10 w-full max-w-md text-center">
+        {/* User Info */}
         <div className="flex flex-col items-center space-y-3 mb-6">
-          <FaUserCircle className="text-6xl text-white/90 drop-shadow-lg" />
-          <h1 className="text-3xl font-extrabold tracking-tight drop-shadow-md">
-            Welcome, <span className="text-yellow-300">{user.name}</span> 👋
+          <FaUserCircle className="text-6xl text-black-800 drop-shadow-md" />
+          <h1 className="text-2xl sm:text-3xl font-extrabold tracking-tight text-white">
+            Welcome, <span className="text-yellow-500">{user.name}</span> 👋
           </h1>
-          <p className="text-white/70 text-sm">
+          <p className="text-gray-600 text-sm sm:text-base">
             You’re logged in as <span className="font-semibold">{user.role}</span>
           </p>
         </div>
 
-        <div className="bg-white/10 border border-white/20 rounded-2xl p-6 mb-8">
-          <h2 className="text-xl font-semibold mb-3 flex items-center justify-center gap-2">
-            <FaCrown className="text-yellow-300" />
+        {/* Panel Info */}
+        <div className="bg-gray-50 border border-gray-200 rounded-2xl p-5 mb-8">
+          <h2 className="text-lg sm:text-xl font-semibold mb-3 flex items-center justify-center gap-2 text-black">
+            <FaCrown className="text-yellow-500" />
             GameVerse Admin Panel
           </h2>
-          <p className="text-white/70 text-sm">
+          <p className="text-black-600 text-sm">
             Manage your dashboard, track live users, view reports, and more.
           </p>
         </div>
 
+        {/* Logout Button */}
         <button
           onClick={() => {
             logout();
             navigate("/login");
           }}
-          className="w-full flex items-center justify-center gap-2 bg-gradient-to-r from-yellow-400 to-pink-500 text-gray-900 font-semibold px-6 py-3 rounded-2xl hover:scale-105 hover:shadow-lg transition-all duration-300"
+          className="w-full flex items-center justify-center gap-2 bg-yellow-400 text-white font-semibold px-6 py-3 rounded-2xl hover:scale-105 hover:shadow-lg transition-all duration-300"
         >
           <FaSignOutAlt /> Logout
         </button>
