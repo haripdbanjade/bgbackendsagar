@@ -1,60 +1,56 @@
-import React, { useEffect, useState } from "react";
+import { useAuth } from "../context/AuthContext";
 import { useNavigate } from "react-router-dom";
-import { FaUserCircle } from "react-icons/fa";
+import { useEffect } from "react";
+import { FaUserCircle, FaSignOutAlt, FaCrown } from "react-icons/fa";
 
 export default function Dashboard() {
+  const { user, logout } = useAuth();
   const navigate = useNavigate();
-  const [user, setUser] = useState(null);
 
   useEffect(() => {
-    const token = localStorage.getItem("token");
-    const storedUser = localStorage.getItem("user");
-
-    if (!token || !storedUser) {
+    if (!user) {
       navigate("/login");
-    } else {
-      setUser(JSON.parse(storedUser));
     }
-  }, [navigate]);
+  }, [user, navigate]);
 
-  const handleLogout = () => {
-    localStorage.removeItem("token");
-    localStorage.removeItem("user");
-    navigate("/login");
-  };
+  if (!user) return null;
 
   return (
-    <div className="flex items-center justify-center min-h-screen bg-gradient-to-br from-purple-100 via-pink-100 to-blue-100 px-4">
-      <div className="bg-gradient-to-r from-blue-500 via-purple-600 to-pink-500 shadow-xl rounded-3xl p-6 sm:p-10 md:p-12 max-w-md sm:max-w-xl w-full text-center transition-transform transform hover:scale-[1.02] flex flex-col justify-center">
+    <div className="min-h-screen flex flex-col items-center justify-center bg-red-600 text-white relative overflow-hidden">
+      {/* Floating gradient orbs */}
+      <div className="absolute top-10 left-10 w-48 h-48 bg-purple-400/40 blur-3xl rounded-full"></div>
+      <div className="absolute bottom-10 right-10 w-56 h-56 bg-pink-400/40 blur-3xl rounded-full"></div>
 
-        <FaUserCircle className="text-white text-5xl sm:text-6xl mx-auto mb-5 sm:mb-6 animate-bounce" />
+      <div className="relative bg-white/10 backdrop-blur-xl border border-white/20 shadow-2xl rounded-3xl px-12 py-10 w-[90%] max-w-lg text-center animate-fade-in">
+        <div className="flex flex-col items-center space-y-3 mb-6">
+          <FaUserCircle className="text-6xl text-white/90 drop-shadow-lg" />
+          <h1 className="text-3xl font-extrabold tracking-tight drop-shadow-md">
+            Welcome, <span className="text-yellow-300">{user.name}</span> 👋
+          </h1>
+          <p className="text-white/70 text-sm">
+            You’re logged in as <span className="font-semibold">{user.role}</span>
+          </p>
+        </div>
 
-        <h1 className="text-2xl sm:text-3xl md:text-4xl font-extrabold text-white mb-3">
-          Welcome{user ? `, ${user.name}` : ""}!
-        </h1>
-
-        <p className="text-white/90 text-sm sm:text-base md:text-lg mb-5 sm:mb-6">
-          This is your personalized dashboard. Manage your services and explore tools built just for you.
-        </p>
-
-        {user && (
-          <div className="bg-white/20 p-3 sm:p-4 rounded-lg text-white text-left mb-5">
-            <p className="text-sm sm:text-base"><span className="font-semibold">Name:</span> {user.name}</p>
-            <p className="text-sm sm:text-base"><span className="font-semibold">Email:</span> {user.email}</p>
-            <p className="text-sm sm:text-base"><span className="font-semibold">Role:</span> {user.role || "User"}</p>
-          </div>
-        )}
+        <div className="bg-white/10 border border-white/20 rounded-2xl p-6 mb-8">
+          <h2 className="text-xl font-semibold mb-3 flex items-center justify-center gap-2">
+            <FaCrown className="text-yellow-300" />
+            GameVerse Admin Panel
+          </h2>
+          <p className="text-white/70 text-sm">
+            Manage your dashboard, track live users, view reports, and more.
+          </p>
+        </div>
 
         <button
-          onClick={handleLogout}
-          className="bg-red-500 text-white py-2 sm:py-2.5 px-4 rounded-lg hover:bg-red-600 transition text-sm sm:text-base w-full mb-5"
+          onClick={() => {
+            logout();
+            navigate("/login");
+          }}
+          className="w-full flex items-center justify-center gap-2 bg-gradient-to-r from-yellow-400 to-pink-500 text-gray-900 font-semibold px-6 py-3 rounded-2xl hover:scale-105 hover:shadow-lg transition-all duration-300"
         >
-          Logout
+          <FaSignOutAlt /> Logout
         </button>
-
-        <div className="text-white/80 italic text-xs sm:text-sm mt-auto">
-          — Your Servicer, <strong>Gaming Market</strong>
-        </div>
       </div>
     </div>
   );

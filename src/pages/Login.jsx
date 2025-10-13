@@ -1,7 +1,6 @@
-
 import { useState } from "react";
 import { useNavigate } from "react-router-dom";
-import { useAuth } from "../context/Authcontext";
+import { useAuth } from "../context/AuthContext";
 import { FcGoogle } from "react-icons/fc";
 
 export default function Login() {
@@ -14,28 +13,26 @@ export default function Login() {
   const handleLogin = (e) => {
     e.preventDefault();
 
-    // Example credentials
-    const validUsername = "Gameverse";
+    const validUsername = "GameVerse";
     const validPassword = "Gaming@123";
 
     if (email === validUsername && password === validPassword) {
       const userData = {
-        name: "Sirjana Bhattarai",
-        email: "sirjana@example.com",
+        name: "GameVerse",
+        email: "gaming@gmail.com",
         role: "Admin",
       };
       login(userData);
       navigate("/dashboard");
     } else {
-      setError("Invalid username or password ❌");
+      setError("Invalid username or password");
     }
   };
 
   const handleGoogleLogin = () => {
-    // Simulate successful Google login
     const googleUser = {
-      name: "Sirjana Bhattarai (Google)",
-      email: "sirjana@gmail.com",
+      name: "GameVerse (Google)",
+      email: "gaming@google.com",
       role: "Admin",
     };
     login(googleUser);
@@ -50,10 +47,9 @@ export default function Login() {
         </h2>
         <p className="text-gray-500 mb-8">
           Login to continue as{" "}
-          <span className="font-semibold text-purple-600">Sirjana</span>
+          <span className="font-semibold text-purple-600">Gameverse</span>
         </p>
 
-        {/* Login Form */}
         <form onSubmit={handleLogin} className="space-y-5 text-left">
           <div>
             <label className="block text-sm font-medium text-gray-600 mb-1">
@@ -67,6 +63,7 @@ export default function Login() {
               className="w-full px-4 py-2 rounded-xl border border-gray-300 focus:ring-2 focus:ring-purple-400 focus:outline-none"
             />
           </div>
+
           <div>
             <label className="block text-sm font-medium text-gray-600 mb-1">
               Password
@@ -92,23 +89,22 @@ export default function Login() {
           </button>
         </form>
 
-        {/* Divider */}
         <div className="flex items-center my-6">
           <div className="flex-1 h-px bg-gray-300"></div>
           <span className="px-3 text-gray-400 text-sm">OR</span>
           <div className="flex-1 h-px bg-gray-300"></div>
         </div>
 
-        {/* Google Login */}
         <button
           onClick={handleGoogleLogin}
           className="w-full flex items-center justify-center gap-3 bg-white border border-gray-300 rounded-xl py-3 hover:bg-gray-50 hover:shadow transition-all duration-300"
         >
           <FcGoogle size={22} />
-          <span className="text-gray-700 font-medium">Continue with Google</span>
+          <span className="text-gray-700 font-medium">
+            Continue with Google
+          </span>
         </button>
 
-        {/* Forgot Password & Register */}
         <div className="mt-6 text-sm text-gray-500 space-y-2">
           <p>
             <a
