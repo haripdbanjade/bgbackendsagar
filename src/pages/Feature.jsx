@@ -1,4 +1,3 @@
-
 import React, { useState } from "react";
 
 export default function GameCMS() {
@@ -62,9 +61,7 @@ export default function GameCMS() {
     };
 
     if (editId) {
-      setGames((prev) =>
-        prev.map((g) => (g.id === editId ? newGame : g))
-      );
+      setGames((prev) => prev.map((g) => (g.id === editId ? newGame : g)));
     } else {
       setGames((prev) => [newGame, ...prev]);
     }
@@ -95,12 +92,14 @@ export default function GameCMS() {
   });
 
   return (
-    <div className="max-w-6xl mx-auto p-6 text-white font-sans bg-[#0d1117] min-h-screen">
-      <header className="flex justify-between mb-6 items-center">
-        <h1 className="text-3xl font-bold text-red-500">Game CMS</h1>
+    <div className="bg-[#0d1117] text-white font-sans min-h-screen px-4 sm:px-8 md:px-12 lg:px-72  py-10">
+      <header className="flex flex-col sm:flex-row justify-between items-center mb-6 gap-4">
+        <h1 className="text-2xl sm:text-3xl font-bold text-red-500 text-center sm:text-left">
+          Game CMS
+        </h1>
         <button
           onClick={resetForm}
-          className="bg-red-600 hover:bg-red-700 transition text-white px-4 py-2 rounded"
+          className="bg-red-600 hover:bg-red-700 transition text-white px-4 py-2 rounded w-full sm:w-auto"
         >
           Add New Game
         </button>
@@ -108,17 +107,17 @@ export default function GameCMS() {
 
       {/* Form */}
       <div className="bg-gray-900 p-4 rounded mb-6 shadow-lg">
-        <div className="grid grid-cols-1 md:grid-cols-3 gap-4">
+        <div className="grid grid-cols-1 sm:grid-cols-3 gap-4">
           <input
             type="text"
-            className="p-2 rounded bg-gray-800 text-white"
+            className="p-2 rounded bg-gray-800 text-white w-full"
             placeholder="Game Name"
             value={form.name}
             onChange={(e) => setForm({ ...form, name: e.target.value })}
           />
           <input
             type="text"
-            className="p-2 rounded bg-gray-800 text-white"
+            className="p-2 rounded bg-gray-800 text-white w-full"
             placeholder="Earning (e.g. ₹120000)"
             value={form.earning}
             onChange={(e) => setForm({ ...form, earning: e.target.value })}
@@ -126,30 +125,33 @@ export default function GameCMS() {
           <input
             type="file"
             accept="image/*"
-            className="p-2 bg-gray-800 text-white"
+            className="p-2 bg-gray-800 text-white w-full"
             onChange={handleImageChange}
           />
         </div>
+
         {form.image && (
-          <img
-            src={form.image}
-            alt="Preview"
-            className="mt-4 w-40 h-24 object-cover rounded border border-gray-700"
-          />
+          <div className="flex justify-center sm:justify-start mt-4">
+            <img
+              src={form.image}
+              alt="Preview"
+              className="w-40 h-24 object-cover rounded border border-gray-700"
+            />
+          </div>
         )}
 
-        <div className="mt-4 flex justify-end space-x-2">
+        <div className="mt-4 flex flex-col sm:flex-row justify-end gap-2">
           {editId && (
             <button
               onClick={resetForm}
-              className="px-4 py-2 border border-gray-600 rounded text-white hover:bg-gray-800 transition"
+              className="px-4 py-2 border border-gray-600 rounded text-white hover:bg-gray-800 transition w-full sm:w-auto"
             >
               Cancel
             </button>
           )}
           <button
             onClick={handleSave}
-            className="px-4 py-2 bg-red-600 hover:bg-red-700 transition text-white rounded"
+            className="px-4 py-2 bg-red-600 hover:bg-red-700 transition text-white rounded w-full sm:w-auto"
           >
             {editId ? "Update Game" : "Save Game"}
           </button>
@@ -158,7 +160,7 @@ export default function GameCMS() {
 
       {/* Table */}
       <div className="overflow-x-auto">
-        <table className="w-full text-left border border-gray-700 rounded">
+        <table className="w-full text-left border border-gray-700 rounded text-sm sm:text-base">
           <thead className="bg-gray-800 text-gray-300">
             <tr>
               <th className="p-2 border border-gray-700">Image</th>
@@ -170,17 +172,20 @@ export default function GameCMS() {
           <tbody>
             {sortedGames.length > 0 ? (
               sortedGames.map((game) => (
-                <tr key={game.id} className="hover:bg-gray-800">
+                <tr
+                  key={game.id}
+                  className="hover:bg-gray-800 transition-colors"
+                >
                   <td className="p-2 border border-gray-700">
                     <img
                       src={game.image}
                       alt={game.name}
-                      className="w-20 h-14 object-cover rounded"
+                      className="w-16 h-12 sm:w-20 sm:h-14 object-cover rounded"
                     />
                   </td>
                   <td className="p-2 border border-gray-700">{game.name}</td>
                   <td className="p-2 border border-gray-700">{game.earning}</td>
-                  <td className="p-2 border border-gray-700 space-x-4">
+                  <td className="p-2 border border-gray-700 space-x-3">
                     <button
                       onClick={() => handleEdit(game)}
                       className="text-yellow-400 hover:underline"
@@ -198,7 +203,10 @@ export default function GameCMS() {
               ))
             ) : (
               <tr>
-                <td colSpan="4" className="text-center p-4 text-gray-500">
+                <td
+                  colSpan="4"
+                  className="text-center p-4 text-gray-500 text-sm sm:text-base"
+                >
                   No games available.
                 </td>
               </tr>
