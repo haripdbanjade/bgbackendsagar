@@ -8,11 +8,12 @@ export default function Dashboard() {
 
   useEffect(() => {
     const token = localStorage.getItem("token");
-    if (!token) {
+    const storedUser = localStorage.getItem("user");
+
+    if (!token || !storedUser) {
       navigate("/login");
     } else {
-      const storedUser = localStorage.getItem("user");
-      if (storedUser) setUser(JSON.parse(storedUser));
+      setUser(JSON.parse(storedUser));
     }
   }, [navigate]);
 
@@ -24,8 +25,8 @@ export default function Dashboard() {
 
   return (
     <div className="flex items-center justify-center min-h-screen bg-gradient-to-br from-purple-100 via-pink-100 to-blue-100 px-4">
-      <div className="bg-gradient-to-r from-blue-500 via-purple-600 to-pink-500 shadow-xl rounded-3xl p-6 sm:p-10 md:p-12 max-w-md sm:max-w-xl w-full text-center flex flex-col">
-        
+      <div className="bg-gradient-to-r from-blue-500 via-purple-600 to-pink-500 shadow-xl rounded-3xl p-6 sm:p-10 md:p-12 max-w-md sm:max-w-xl w-full text-center transition-transform transform hover:scale-[1.02] flex flex-col justify-center">
+
         <FaUserCircle className="text-white text-5xl sm:text-6xl mx-auto mb-5 sm:mb-6 animate-bounce" />
 
         <h1 className="text-2xl sm:text-3xl md:text-4xl font-extrabold text-white mb-3">
@@ -43,21 +44,6 @@ export default function Dashboard() {
             <p className="text-sm sm:text-base"><span className="font-semibold">Role:</span> {user.role || "User"}</p>
           </div>
         )}
-
-        <div className="grid gap-3 sm:gap-4 grid-cols-1 sm:grid-cols-2 mb-5">
-          <button
-            onClick={() => navigate("/profile")}
-            className="bg-white text-blue-600 py-2 sm:py-2.5 px-4 rounded-lg font-semibold hover:bg-gray-200 transition text-sm sm:text-base"
-          >
-            View Profile
-          </button>
-          <button
-            onClick={() => navigate("/services")}
-            className="bg-white text-purple-600 py-2 sm:py-2.5 px-4 rounded-lg font-semibold hover:bg-gray-200 transition text-sm sm:text-base"
-          >
-            Manage Feature
-          </button>
-        </div>
 
         <button
           onClick={handleLogout}
