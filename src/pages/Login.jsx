@@ -14,13 +14,13 @@ export default function Login() {
   const handleLogin = (e) => {
     e.preventDefault();
 
-    const validUsername = "GameVerse";
-    const validPassword = "Gaming@123";
+    const validUsername = "bg678";
+    const validPassword = "bg678@123";
 
     if (email === validUsername && password === validPassword) {
       const userData = {
-        name: "GameVerse",
-        email: "gaming@gmail.com",
+        name: "bg678",
+        email: "bg678@gmail.com",
         role: "Admin",
       };
       login(userData);
@@ -32,8 +32,8 @@ export default function Login() {
 
   const handleGoogleLogin = () => {
     const googleUser = {
-      name: "GameVerse (Google)",
-      email: "gaming@google.com",
+      name: "bg678 (Google)",
+      email: "bg678@google.com",
       role: "Admin",
     };
     login(googleUser);
@@ -48,7 +48,7 @@ export default function Login() {
         </h2>
         <p className="text-gray-500 mb-8">
           Login to continue as{" "}
-          <span className="font-semibold text-purple-600">Gameverse</span>
+          <span className="font-semibold text-purple-600">bg678</span>
         </p>
 
         <form onSubmit={handleLogin} className="space-y-5 text-left">

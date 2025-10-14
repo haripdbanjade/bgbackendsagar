@@ -35,7 +35,7 @@ export default function Dashboard() {
         <div className="bg-gray-50 border border-gray-200 rounded-2xl p-5 mb-8">
           <h2 className="text-lg sm:text-xl font-semibold mb-3 flex items-center justify-center gap-2 text-black">
             <FaCrown className="text-yellow-500" />
-            GameVerse Admin Panel
+            bg678 Admin Panel
           </h2>
           <p className="text-black-600 text-sm">
             Manage your dashboard, track live users, view reports, and more.

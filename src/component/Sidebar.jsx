@@ -39,7 +39,7 @@ export default function Sidebar() {
         `}
       >
         <div className="p-5 border-b border-red-600 flex justify-between items-center">
-          <h1 className="text-3xl font-extrabold">GameVerse</h1>
+          <h1 className="text-3xl font-extrabold">bg678</h1>
           {/* Close button for mobile */}
           <button
             className="md:hidden text-white text-2xl"

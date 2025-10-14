@@ -17,7 +17,7 @@ export default function Header() {
           className="text-sm text-right cursor-pointer"
           onClick={() => setIsOpen(!isOpen)}
         >
-          <div className="font-semibold text-gray-800">Gaming Market</div>
+          <div className="font-semibold text-gray-800">bg678 Market</div>
           <span className="bg-green-200 text-green-800 text-xs font-semibold px-2 py-0.5 rounded">
             Admin
           </span>

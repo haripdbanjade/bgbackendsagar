@@ -77,7 +77,7 @@ export default function Blog() {
   return (
     <div className="max-w-4xl mx-auto p-6 font-sans">
       <header className="flex justify-between mb-6">
-        <h1 className="text-2xl font-bold text-red-600">Gaming News</h1>
+        <h1 className="text-2xl font-bold text-red-600">bg678 News</h1>
         <button
           onClick={startAdd}
           className="bg-red-600 text-white px-3 py-1 rounded"
