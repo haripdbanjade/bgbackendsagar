@@ -92,7 +92,7 @@ export default function GameCMS() {
   });
 
   return (
-    <div className="bg-[#0d1117] text-white font-sans min-h-screen px-4 sm:px-8 md:px-12 lg:px-72  py-10">
+    <div className="bg-[#0b0e15] text-white p-6 min-h-screen max-w-4xl mx-auto">
       <header className="flex flex-col sm:flex-row justify-between items-center mb-6 gap-4">
         <h1 className="text-2xl sm:text-3xl font-bold text-red-500 text-center sm:text-left">
           Game CMS

@@ -52,7 +52,7 @@ export default function PaymentLicenseCMS() {
   };
 
   return (
-    <section className="bg-[#0b0e15] min-h-screen flex items-center justify-center px-4 sm:px-8 md:px-72 py-10">
+    <section className="bg-[#0b0e15] text-white p-6 min-h-screen max-w-4xl mx-auto">
       <div className="w-full max-w-6xl bg-[#111827] rounded-xl border border-gray-700 p-6 sm:p-8 md:p-10 grid grid-cols-1 md:grid-cols-2 gap-8 md:gap-10">
         {/* ===== Payment Method Block ===== */}
         <div>

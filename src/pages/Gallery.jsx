@@ -69,7 +69,7 @@ export default function LiveAndGalleryCMS() {
   };
 
   return (
-    <div className="min-h-screen flex items-center justify-center bg-black px-4 md:pl-60">
+    <div className="bg-[#0b0e15] text-white p-6 min-h-screen max-w-4xl mx-auto">
       <section className="w-full max-w-5xl rounded-lg bg-[#1a1f2e] text-white shadow-2xl p-4 sm:p-6 overflow-x-auto">
         {/* Live Winning Feed */}
         <div className="mb-10">
