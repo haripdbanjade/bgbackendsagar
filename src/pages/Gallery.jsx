@@ -37,365 +37,277 @@ export default function LiveAndGalleryCMS() {
   const [newLive, setNewLive] = useState({ user: "", amount: "", game: "" });
   const [newTop, setNewTop] = useState({ name: "", amount: "", color: "yellow" });
 
-  const handleLiveChange = (id, field, value) => {
-    setLiveData((old) =>
-      old.map((item) => (item.id === id ? { ...item, [field]: value } : item))
-    );
-  };
+  // === Handlers ===
+  const handleLiveChange = (id, field, value) =>
+    setLiveData((prev) => prev.map((item) => (item.id === id ? { ...item, [field]: value } : item)));
 
-  const handleTopChange = (id, field, value) => {
-    setTopEarners((old) =>
-      old.map((item) => (item.id === id ? { ...item, [field]: value } : item))
-    );
-  };
+  const handleTopChange = (id, field, value) =>
+    setTopEarners((prev) => prev.map((item) => (item.id === id ? { ...item, [field]: value } : item)));
 
-  const handleDeleteLive = (id) =>
-    setLiveData((old) => old.filter((item) => item.id !== id));
-  const handleDeleteTop = (id) =>
-    setTopEarners((old) => old.filter((item) => item.id !== id));
+  const handleDeleteLive = (id) => setLiveData((prev) => prev.filter((item) => item.id !== id));
+  const handleDeleteTop = (id) => setTopEarners((prev) => prev.filter((item) => item.id !== id));
 
   const handleAddLive = () => {
-    if (!newLive.user || !newLive.amount || !newLive.game)
-      return alert("Fill all live fields!");
-    setLiveData((old) => [...old, { ...newLive, id: old.length + 1 }]);
+    if (!newLive.user || !newLive.amount || !newLive.game) return alert("Please fill all live fields!");
+    setLiveData((prev) => [...prev, { ...newLive, id: prev.length + 1 }]);
     setNewLive({ user: "", amount: "", game: "" });
   };
 
   const handleAddTop = () => {
-    if (!newTop.name || !newTop.amount)
-      return alert("Fill all top earner fields!");
-    setTopEarners((old) => [...old, { ...newTop, id: old.length + 1 }]);
+    if (!newTop.name || !newTop.amount) return alert("Please fill all top earner fields!");
+    setTopEarners((prev) => [...prev, { ...newTop, id: prev.length + 1 }]);
     setNewTop({ name: "", amount: "", color: "yellow" });
   };
 
   return (
-    <div className="bg-[#0b0e15] text-white p-6 min-h-screen max-w-4xl mx-auto">
-      <section className="w-full max-w-5xl rounded-lg bg-[#1a1f2e] text-white shadow-2xl p-4 sm:p-6 overflow-x-auto">
-        {/* Live Winning Feed */}
-        <div className="mb-10">
-          <h2 className="flex flex-wrap items-center justify-center text-xl sm:text-2xl font-bold mb-4 gap-2 text-center">
-            <FaBook className="text-red-500" />
-            Live Winning Feed
-          </h2>
+    <section className="min-h-screen bg-white text-white py-12 px-6 md:pl-60 flex justify-center">
+      <div className="w-full max-w-6xl bg-[#0f172a] rounded-3xl shadow-2xl border border-slate-700 p-8 sm:p-12">
+      <h2 className="text-2xl font-bold text-center mb-6">Live & Top Earners CMS</h2>
 
-          <div className="overflow-x-auto">
-            <table className="min-w-full text-left border-collapse text-sm sm:text-base">
-              <thead>
-                <tr className="border-b border-gray-700 text-gray-300">
-                  <th className="py-2">User</th>
-                  <th>Amount</th>
-                  <th>Game</th>
-                  <th className="text-center">Actions</th>
-                </tr>
-              </thead>
-              <tbody>
-                {liveData.map((item) => (
-                  <tr
-                    key={item.id}
-                    className="border-b border-gray-800 hover:bg-[#242a3d] transition-all"
-                  >
-                    <td className="py-2 flex items-center gap-2">
-                      <FaUser className="text-gray-400" />
-                      {editingLiveId === item.id ? (
-                        <input
-                          type="text"
-                          value={item.user}
-                          onChange={(e) =>
-                            handleLiveChange(item.id, "user", e.target.value)
-                          }
-                          className="bg-[#2a2f4a] rounded p-1 text-white text-xs sm:text-sm w-full"
-                        />
-                      ) : (
-                        item.user
-                      )}
-                    </td>
-                    <td>
-                      {editingLiveId === item.id ? (
-                        <input
-                          type="text"
-                          value={item.amount}
-                          onChange={(e) =>
-                            handleLiveChange(item.id, "amount", e.target.value)
-                          }
-                          className="bg-[#2a2f4a] rounded p-1 text-yellow-400 font-semibold text-xs sm:text-sm w-full"
-                        />
-                      ) : (
-                        <span className="text-yellow-400 font-semibold">
-                          {item.amount}
-                        </span>
-                      )}
-                    </td>
-                    <td>
-                      {editingLiveId === item.id ? (
-                        <input
-                          type="text"
-                          value={item.game}
-                          onChange={(e) =>
-                            handleLiveChange(item.id, "game", e.target.value)
-                          }
-                          className="bg-[#2a2f4a] rounded p-1 text-white text-xs sm:text-sm w-full"
-                        />
-                      ) : (
-                        item.game
-                      )}
-                    </td>
-                    <td className="py-2 text-center">
-                      <div className="flex justify-center items-center gap-2 sm:gap-3">
-                        {editingLiveId === item.id ? (
-                          <>
-                            <button
-                              onClick={() => setEditingLiveId(null)}
-                              className="text-green-500 hover:text-green-400"
-                              title="Save"
-                            >
-                              <FaSave />
-                            </button>
-                            <button
-                              onClick={() => setEditingLiveId(null)}
-                              className="text-gray-400 hover:text-gray-300"
-                              title="Cancel"
-                            >
-                              <FaTimes />
-                            </button>
-                          </>
-                        ) : (
-                          <>
-                            <button
-                              onClick={() => setEditingLiveId(item.id)}
-                              className="text-yellow-400 hover:text-yellow-300"
-                              title="Edit"
-                            >
-                              <FaEdit />
-                            </button>
-                            <button
-                              onClick={() => handleDeleteLive(item.id)}
-                              className="text-red-600 hover:text-red-500"
-                              title="Delete"
-                            >
-                              <FaTrash />
-                            </button>
-                          </>
-                        )}
-                      </div>
-                    </td>
-                  </tr>
-                ))}
+      {/* === LIVE WINNING FEED === */}
+      <div className="mb-12">
+        <h3 className="flex items-center justify-center text-xl font-semibold mb-4 gap-2">
+          <FaBook className="text-red-500" /> Live Winning Feed
+        </h3>
 
-                <tr>
-                  <td>
+        <table className="w-full text-sm border border-gray-700 rounded-lg overflow-hidden">
+          <thead className="bg-gray-800">
+            <tr>
+              <th className="p-2 border">User</th>
+              <th className="p-2 border">Amount</th>
+              <th className="p-2 border">Game</th>
+              <th className="p-2 border text-center">Actions</th>
+            </tr>
+          </thead>
+          <tbody>
+            {liveData.map((item) => (
+              <tr key={item.id} className="bg-gray-900 hover:bg-gray-800 transition">
+                <td className="p-2 border">
+                  {editingLiveId === item.id ? (
                     <input
                       type="text"
-                      placeholder="User"
-                      value={newLive.user}
-                      onChange={(e) =>
-                        setNewLive({ ...newLive, user: e.target.value })
-                      }
-                      className="bg-[#2a2f4a] rounded p-1 text-white text-xs sm:text-sm w-full"
+                      value={item.user}
+                      onChange={(e) => handleLiveChange(item.id, "user", e.target.value)}
+                      className="bg-gray-800 rounded p-1 text-white w-full"
                     />
-                  </td>
-                  <td>
+                  ) : (
+                    <div className="flex items-center gap-2">
+                      <FaUser className="text-gray-400" /> {item.user}
+                    </div>
+                  )}
+                </td>
+                <td className="p-2 border text-yellow-400 font-semibold">
+                  {editingLiveId === item.id ? (
                     <input
                       type="text"
-                      placeholder="Amount"
-                      value={newLive.amount}
-                      onChange={(e) =>
-                        setNewLive({ ...newLive, amount: e.target.value })
-                      }
-                      className="bg-[#2a2f4a] rounded p-1 text-yellow-400 font-semibold text-xs sm:text-sm w-full"
+                      value={item.amount}
+                      onChange={(e) => handleLiveChange(item.id, "amount", e.target.value)}
+                      className="bg-gray-800 rounded p-1 text-yellow-400 w-full"
                     />
-                  </td>
-                  <td>
+                  ) : (
+                    item.amount
+                  )}
+                </td>
+                <td className="p-2 border">
+                  {editingLiveId === item.id ? (
                     <input
                       type="text"
-                      placeholder="Game"
-                      value={newLive.game}
-                      onChange={(e) =>
-                        setNewLive({ ...newLive, game: e.target.value })
-                      }
-                      className="bg-[#2a2f4a] rounded p-1 text-white text-xs sm:text-sm w-full"
+                      value={item.game}
+                      onChange={(e) => handleLiveChange(item.id, "game", e.target.value)}
+                      className="bg-gray-800 rounded p-1 text-white w-full"
                     />
-                  </td>
-                  <td className="text-center">
-                    <button
-                      onClick={handleAddLive}
-                      className="flex items-center justify-center gap-1 bg-red-600 hover:bg-red-700 rounded py-1 px-2 sm:px-3 text-xs sm:text-sm font-semibold mx-auto"
-                    >
-                      <FaPlus /> Add
-                    </button>
-                  </td>
-                </tr>
-              </tbody>
-            </table>
-          </div>
-        </div>
+                  ) : (
+                    item.game
+                  )}
+                </td>
+                <td className="p-2 border text-center flex justify-center gap-2">
+                  {editingLiveId === item.id ? (
+                    <>
+                      <button onClick={() => setEditingLiveId(null)} className="text-green-500 hover:text-green-400">
+                        <FaSave />
+                      </button>
+                      <button onClick={() => setEditingLiveId(null)} className="text-gray-400 hover:text-gray-300">
+                        <FaTimes />
+                      </button>
+                    </>
+                  ) : (
+                    <>
+                      <button onClick={() => setEditingLiveId(item.id)} className="text-yellow-400 hover:text-yellow-300">
+                        <FaEdit />
+                      </button>
+                      <button onClick={() => handleDeleteLive(item.id)} className="text-red-500 hover:text-red-400">
+                        <FaTrash />
+                      </button>
+                    </>
+                  )}
+                </td>
+              </tr>
+            ))}
 
-        {/* Top Earners */}
-        <div>
-          <h2 className="flex flex-wrap items-center justify-center text-xl sm:text-2xl font-bold mb-4 gap-2 text-center">
-            <FaCrown className="text-red-500" />
-            Today's Top Earners
-          </h2>
+            {/* Add Row */}
+            <tr className="bg-gray-900">
+              <td className="p-2 border">
+                <input
+                  placeholder="User"
+                  value={newLive.user}
+                  onChange={(e) => setNewLive({ ...newLive, user: e.target.value })}
+                  className="bg-gray-800 rounded p-1 text-white w-full"
+                />
+              </td>
+              <td className="p-2 border">
+                <input
+                  placeholder="Amount"
+                  value={newLive.amount}
+                  onChange={(e) => setNewLive({ ...newLive, amount: e.target.value })}
+                  className="bg-gray-800 rounded p-1 text-yellow-400 w-full"
+                />
+              </td>
+              <td className="p-2 border">
+                <input
+                  placeholder="Game"
+                  value={newLive.game}
+                  onChange={(e) => setNewLive({ ...newLive, game: e.target.value })}
+                  className="bg-gray-800 rounded p-1 text-white w-full"
+                />
+              </td>
+              <td className="p-2 border text-center">
+                <button
+                  onClick={handleAddLive}
+                  className="bg-red-600 hover:bg-red-700 rounded p-2 text-sm font-semibold flex items-center justify-center gap-1 mx-auto"
+                >
+                  <FaPlus /> Add
+                </button>
+              </td>
+            </tr>
+          </tbody>
+        </table>
+      </div>
 
-          <div className="overflow-x-auto">
-            <table className="min-w-full text-left border-collapse text-sm sm:text-base">
-              <thead>
-                <tr className="border-b border-gray-700 text-gray-300">
-                  <th className="py-2">Name</th>
-                  <th>Amount</th>
-                  <th>Color</th>
-                  <th className="text-center">Actions</th>
-                </tr>
-              </thead>
-              <tbody>
-                {topEarners.map((earner) => (
-                  <tr
-                    key={earner.id}
-                    className="border-b border-gray-800 hover:bg-[#242a3d] transition-all"
-                  >
-                    <td>
-                      {editingTopId === earner.id ? (
-                        <input
-                          type="text"
-                          value={earner.name}
-                          onChange={(e) =>
-                            handleTopChange(earner.id, "name", e.target.value)
-                          }
-                          className="bg-[#2a2f4a] rounded p-1 text-white text-xs sm:text-sm w-full"
-                        />
-                      ) : (
-                        <div className="flex items-center gap-2">
-                          <FaUser className="text-gray-400" />
-                          {earner.name}
-                        </div>
-                      )}
-                    </td>
-                    <td>
-                      {editingTopId === earner.id ? (
-                        <input
-                          type="text"
-                          value={earner.amount}
-                          onChange={(e) =>
-                            handleTopChange(earner.id, "amount", e.target.value)
-                          }
-                          className="bg-[#2a2f4a] rounded p-1 text-yellow-400 font-semibold text-xs sm:text-sm w-full"
-                        />
-                      ) : (
-                        <span className="text-yellow-400 font-semibold">
-                          {earner.amount}
-                        </span>
-                      )}
-                    </td>
-                    <td>
-                      {editingTopId === earner.id ? (
-                        <select
-                          value={earner.color}
-                          onChange={(e) =>
-                            handleTopChange(earner.id, "color", e.target.value)
-                          }
-                          className="bg-[#2a2f4a] rounded p-1 text-white text-xs sm:text-sm w-full"
-                        >
-                          <option value="yellow">Yellow</option>
-                          <option value="gray">Gray</option>
-                          <option value="orange">Orange</option>
-                        </select>
-                      ) : (
-                        <span className={colorMap[earner.color]}>
-                          {earner.color}
-                        </span>
-                      )}
-                    </td>
-                    <td className="py-2 text-center">
-                      <div className="flex justify-center items-center gap-2 sm:gap-3">
-                        {editingTopId === earner.id ? (
-                          <>
-                            <button
-                              onClick={() => setEditingTopId(null)}
-                              className="text-green-500 hover:text-green-400"
-                              title="Save"
-                            >
-                              <FaSave />
-                            </button>
-                            <button
-                              onClick={() => setEditingTopId(null)}
-                              className="text-gray-400 hover:text-gray-300"
-                              title="Cancel"
-                            >
-                              <FaTimes />
-                            </button>
-                          </>
-                        ) : (
-                          <>
-                            <button
-                              onClick={() => setEditingTopId(earner.id)}
-                              className="text-yellow-400 hover:text-yellow-300"
-                              title="Edit"
-                            >
-                              <FaEdit />
-                            </button>
-                            <button
-                              onClick={() => handleDeleteTop(earner.id)}
-                              className="text-red-600 hover:text-red-500"
-                              title="Delete"
-                            >
-                              <FaTrash />
-                            </button>
-                          </>
-                        )}
-                      </div>
-                    </td>
-                  </tr>
-                ))}
+      {/* === TOP EARNERS === */}
+      <div>
+        <h3 className="flex items-center justify-center text-xl font-semibold mb-4 gap-2">
+          <FaCrown className="text-red-500" /> Today's Top Earners
+        </h3>
 
-                <tr>
-                  <td>
+        <table className="w-full text-sm border border-gray-700 rounded-lg overflow-hidden">
+          <thead className="bg-gray-800">
+            <tr>
+              <th className="p-2 border">Name</th>
+              <th className="p-2 border">Amount</th>
+              <th className="p-2 border">Color</th>
+              <th className="p-2 border text-center">Actions</th>
+            </tr>
+          </thead>
+          <tbody>
+            {topEarners.map((earner) => (
+              <tr key={earner.id} className="bg-gray-900 hover:bg-gray-800 transition">
+                <td className="p-2 border">
+                  {editingTopId === earner.id ? (
                     <input
                       type="text"
-                      placeholder="Name"
-                      value={newTop.name}
-                      onChange={(e) =>
-                        setNewTop({ ...newTop, name: e.target.value })
-                      }
-                      className="bg-[#2a2f4a] rounded p-1 text-white text-xs sm:text-sm w-full"
+                      value={earner.name}
+                      onChange={(e) => handleTopChange(earner.id, "name", e.target.value)}
+                      className="bg-gray-800 rounded p-1 text-white w-full"
                     />
-                  </td>
-                  <td>
+                  ) : (
+                    <div className="flex items-center gap-2">
+                      <FaUser className="text-gray-400" /> {earner.name}
+                    </div>
+                  )}
+                </td>
+                <td className="p-2 border text-yellow-400 font-semibold">
+                  {editingTopId === earner.id ? (
                     <input
                       type="text"
-                      placeholder="Amount"
-                      value={newTop.amount}
-                      onChange={(e) =>
-                        setNewTop({ ...newTop, amount: e.target.value })
-                      }
-                      className="bg-[#2a2f4a] rounded p-1 text-yellow-400 font-semibold text-xs sm:text-sm w-full"
+                      value={earner.amount}
+                      onChange={(e) => handleTopChange(earner.id, "amount", e.target.value)}
+                      className="bg-gray-800 rounded p-1 text-yellow-400 w-full"
                     />
-                  </td>
-                  <td>
+                  ) : (
+                    earner.amount
+                  )}
+                </td>
+                <td className="p-2 border">
+                  {editingTopId === earner.id ? (
                     <select
-                      value={newTop.color}
-                      onChange={(e) =>
-                        setNewTop({ ...newTop, color: e.target.value })
-                      }
-                      className="bg-[#2a2f4a] rounded p-1 text-white text-xs sm:text-sm w-full"
+                      value={earner.color}
+                      onChange={(e) => handleTopChange(earner.id, "color", e.target.value)}
+                      className="bg-gray-800 rounded p-1 text-white w-full"
                     >
                       <option value="yellow">Yellow</option>
                       <option value="gray">Gray</option>
                       <option value="orange">Orange</option>
                     </select>
-                  </td>
-                  <td className="text-center">
-                    <button
-                      onClick={handleAddTop}
-                      className="flex items-center justify-center gap-1 bg-red-600 hover:bg-red-700 rounded py-1 px-2 sm:px-3 text-xs sm:text-sm font-semibold mx-auto"
-                    >
-                      <FaPlus /> Add
-                    </button>
-                  </td>
-                </tr>
-              </tbody>
-            </table>
-          </div>
-        </div>
-      </section>
-    </div>
+                  ) : (
+                    <span className={colorMap[earner.color]}>{earner.color}</span>
+                  )}
+                </td>
+                <td className="p-2 border text-center flex justify-center gap-2">
+                  {editingTopId === earner.id ? (
+                    <>
+                      <button onClick={() => setEditingTopId(null)} className="text-green-500 hover:text-green-400">
+                        <FaSave />
+                      </button>
+                      <button onClick={() => setEditingTopId(null)} className="text-gray-400 hover:text-gray-300">
+                        <FaTimes />
+                      </button>
+                    </>
+                  ) : (
+                    <>
+                      <button onClick={() => setEditingTopId(earner.id)} className="text-yellow-400 hover:text-yellow-300">
+                        <FaEdit />
+                      </button>
+                      <button onClick={() => handleDeleteTop(earner.id)} className="text-red-500 hover:text-red-400">
+                        <FaTrash />
+                      </button>
+                    </>
+                  )}
+                </td>
+              </tr>
+            ))}
+
+            {/* Add Row */}
+            <tr className="bg-gray-900">
+              <td className="p-2 border">
+                <input
+                  placeholder="Name"
+                  value={newTop.name}
+                  onChange={(e) => setNewTop({ ...newTop, name: e.target.value })}
+                  className="bg-gray-800 rounded p-1 text-white w-full"
+                />
+              </td>
+              <td className="p-2 border">
+                <input
+                  placeholder="Amount"
+                  value={newTop.amount}
+                  onChange={(e) => setNewTop({ ...newTop, amount: e.target.value })}
+                  className="bg-gray-800 rounded p-1 text-yellow-400 w-full"
+                />
+              </td>
+              <td className="p-2 border">
+                <select
+                  value={newTop.color}
+                  onChange={(e) => setNewTop({ ...newTop, color: e.target.value })}
+                  className="bg-gray-800 rounded p-1 text-white w-full"
+                >
+                  <option value="yellow">Yellow</option>
+                  <option value="gray">Gray</option>
+                  <option value="orange">Orange</option>
+                </select>
+              </td>
+              <td className="p-2 border text-center">
+                <button
+                  onClick={handleAddTop}
+                  className="bg-red-600 hover:bg-red-700 rounded p-2 text-sm font-semibold flex items-center justify-center gap-1 mx-auto"
+                >
+                  <FaPlus /> Add
+                </button>
+              </td>
+            </tr>
+          </tbody>
+        </table>
+      </div>
+      </div>
+    </section>
   );
 }

@@ -13,7 +13,6 @@ export default function FeatureTableCMS() {
   const [editIndex, setEditIndex] = useState(null);
   const [showDropdown, setShowDropdown] = useState(false);
 
-  // small helper component to render dynamic icon components safely
   const RenderIcon = ({ Icon, className }) => {
     if (!Icon) return null;
     return <Icon className={className} />;
@@ -37,113 +36,135 @@ export default function FeatureTableCMS() {
   };
 
   return (
-    <section className="bg-[#0b0e15] text-white p-6 min-h-screen max-w-4xl mx-auto">
-      <h2 className="text-2xl font-bold mb-4">Features CMS</h2>
+    <section className="min-h-screen bg-white text-white py-12 px-6 md:pl-60 flex justify-center">
+      <div className="w-full max-w-6xl bg-[#0f172a] rounded-3xl shadow-2xl border border-slate-700 p-8 sm:p-12">
+        <h2 className="text-3xl font-extrabold mb-8 text-center text-white">
+          ✨ Manage Features
+        </h2>
 
-      {/* Form */}
-      <form
-        onSubmit={saveFeature}
-        className="grid grid-cols-1 md:grid-cols-4 gap-2 mb-6"
-      >
-        <input
-          placeholder="Title"
-          value={form.title}
-          onChange={(e) => setForm({ ...form, title: e.target.value })}
-          className="p-2 rounded bg-gray-800 border"
-        />
-        <input
-          placeholder="Description"
-          value={form.description}
-          onChange={(e) => setForm({ ...form, description: e.target.value })}
-          className="p-2 rounded bg-gray-800 border"
-        />
+        {/* Form */}
+        <form
+          onSubmit={saveFeature}
+          className="grid grid-cols-1 md:grid-cols-4 gap-4 mb-10"
+        >
+          <input
+            placeholder="Feature Title"
+            value={form.title}
+            onChange={(e) => setForm({ ...form, title: e.target.value })}
+            className="p-3 rounded-xl bg-[#1e293b] border border-slate-600 focus:ring-2 focus:ring-red-500 focus:outline-none text-white placeholder-gray-400"
+          />
+          <input
+            placeholder="Feature Description"
+            value={form.description}
+            onChange={(e) => setForm({ ...form, description: e.target.value })}
+            className="p-3 rounded-xl bg-[#1e293b] border border-slate-600 focus:ring-2 focus:ring-red-500 focus:outline-none text-white placeholder-gray-400"
+          />
 
-        {/* Custom Dropdown */}
-        <div className="relative">
+          {/* Dropdown for Icon Selection */}
+          <div className="relative">
+            <button
+              type="button"
+              onClick={() => setShowDropdown(!showDropdown)}
+              className="flex items-center justify-between gap-2 bg-[#1e293b] p-3 w-full rounded-xl border border-slate-600 text-white hover:border-red-500 transition"
+            >
+              <div className="flex items-center gap-2">
+                <RenderIcon Icon={form.icon} className="text-red-500 text-lg" />
+                <span>{form.icon?.name}</span>
+              </div>
+              <span className="text-gray-400">▼</span>
+            </button>
+            {showDropdown && (
+              <div className="absolute z-10 mt-1 w-full bg-[#0f172a] border border-slate-700 rounded-xl shadow-xl max-h-52 overflow-y-auto">
+                {initialFeatures.map((f, i) => (
+                  <button
+                    key={i}
+                    type="button"
+                    onClick={() => {
+                      setForm({ ...form, icon: f.icon });
+                      setShowDropdown(false);
+                    }}
+                    className="flex items-center gap-3 w-full p-3 hover:bg-[#1e293b] transition text-left"
+                  >
+                    <RenderIcon Icon={f.icon} className="text-red-500 text-lg" />
+                    <span className="text-white">{f.icon?.name}</span>
+                  </button>
+                ))}
+              </div>
+            )}
+          </div>
+
           <button
-            type="button"
-            onClick={() => setShowDropdown(!showDropdown)}
-            className="flex items-center gap-2 bg-gray-800 p-2 w-full rounded border"
+            type="submit"
+            className="bg-gradient-to-r from-green-600 to-emerald-700 hover:from-green-700 hover:to-emerald-800 rounded-xl p-3 font-semibold shadow-md transition"
           >
-            <RenderIcon Icon={form.icon} className="text-red-500" />
-            {form.icon?.name}
+            {editIndex !== null ? "Update Feature" : "Add Feature"}
           </button>
-          {showDropdown && (
-            <div className="absolute z-10 mt-1 w-full bg-gray-900 border rounded shadow-lg max-h-48 overflow-y-auto">
-              {initialFeatures.map((f, i) => (
-                <button
+        </form>
+
+        {/* Table */}
+        <div className="overflow-x-auto rounded-2xl border border-slate-700 shadow-lg">
+          <table className="w-full text-sm">
+            <thead className="bg-[#1e293b] text-slate-200 uppercase text-xs tracking-wider">
+              <tr>
+                <th className="p-4 text-left">Icon</th>
+                <th className="p-4 text-left">Title</th>
+                <th className="p-4 text-left">Description</th>
+                <th className="p-4 text-center">Actions</th>
+              </tr>
+            </thead>
+            <tbody>
+              {features.length === 0 && (
+                <tr>
+                  <td
+                    colSpan={4}
+                    className="p-6 text-center text-slate-400 bg-[#0f172a]"
+                  >
+                    No features added yet.
+                  </td>
+                </tr>
+              )}
+              {features.map((f, i) => (
+                <tr
                   key={i}
-                  type="button"
-                  onClick={() => {
-                    setForm({ ...form, icon: f.icon });
-                    setShowDropdown(false);
-                  }}
-                  className="flex items-center gap-2 w-full p-2 hover:bg-gray-700"
+                  className="bg-[#0f172a] hover:bg-[#1e293b] border-t border-slate-700 transition"
                 >
-                  <RenderIcon Icon={f.icon} className="text-red-500" />
-                  {f.icon?.name}
-                </button>
+                  <td className="p-4">
+                    <RenderIcon Icon={f.icon} className="text-red-500 text-lg" />
+                  </td>
+                  <td className="p-4 font-medium">{f.title}</td>
+                  <td className="p-4 text-slate-400">{f.description}</td>
+                  <td className="p-4 flex gap-4 justify-center">
+                    <button
+                      onClick={() => {
+                        setForm({ ...f });
+                        setEditIndex(i);
+                      }}
+                      className="text-blue-400 hover:text-blue-500 transition"
+                      title="Edit"
+                    >
+                      <FaEdit />
+                    </button>
+                    <button
+                      onClick={() =>
+                        setFeatures(features.filter((_, idx) => idx !== i))
+                      }
+                      className="text-red-400 hover:text-red-500 transition"
+                      title="Delete"
+                    >
+                      <FaTrash />
+                    </button>
+                  </td>
+                </tr>
               ))}
-            </div>
-          )}
+            </tbody>
+          </table>
         </div>
 
-        <button
-          type="submit"
-          className="bg-green-600 hover:bg-green-700 rounded p-2"
-        >
-          {editIndex !== null ? "Update" : "Add"}
-        </button>
-      </form>
-
-      {/* Table */}
-      <table className="w-full text-sm border border-gray-700">
-        <thead className="bg-gray-800">
-          <tr>
-            <th className="p-2 border">Icon</th>
-            <th className="p-2 border">Title</th>
-            <th className="p-2 border">Description</th>
-            <th className="p-2 border">Actions</th>
-          </tr>
-        </thead>
-        <tbody>
-          {features.length === 0 && (
-            <tr>
-              <td colSpan={4} className="p-4 text-center text-gray-400">
-                No features
-              </td>
-            </tr>
-          )}
-          {features.map((f, i) => (
-            <tr key={i} className="bg-gray-900">
-              <td className="p-2 border">
-                <RenderIcon Icon={f.icon} className="text-red-500" />
-              </td>
-              <td className="p-2 border">{f.title}</td>
-              <td className="p-2 border">{f.description}</td>
-              <td className="p-2 border flex gap-2 justify-center">
-                <button
-                  onClick={() => {
-                    setForm({ ...f });
-                    setEditIndex(i);
-                  }}
-                  className="text-blue-400"
-                >
-                  <FaEdit />
-                </button>
-                <button
-                  onClick={() =>
-                    setFeatures(features.filter((_, idx) => idx !== i))
-                  }
-                  className="text-red-400"
-                >
-                  <FaTrash />
-                </button>
-              </td>
-            </tr>
-          ))}
-        </tbody>
-      </table>
+        {/* Footer */}
+        <p className="text-center text-slate-500 text-sm mt-10">
+          © 2025 BG678 Admin Panel
+        </p>
+      </div>
     </section>
   );
 }

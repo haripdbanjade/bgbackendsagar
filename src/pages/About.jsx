@@ -10,7 +10,8 @@ export default function AboutUsEditor() {
   const [bold, setBold] = useState(false);
 
   return (
-    <div className="max-w-4xl mx-auto p-6 min-h-screen bg-[#0d1117] text-white font-sans flex flex-col">
+    <section className="min-h-screen bg-white text-white py-12 px-6 md:pl-60 flex justify-center">
+      <div className="w-full max-w-6xl bg-[#0f172a] rounded-3xl shadow-2xl border border-slate-700 p-8 sm:p-12">
       <header className="mb-8">
         <h1 className="text-4xl font-bold text-red-500 mb-2">About Us</h1>
         <p className="text-gray-400">Learn more about our team and mission.</p>
@@ -64,5 +65,8 @@ export default function AboutUsEditor() {
         &copy; {new Date().getFullYear()} Game CMS. All rights reserved.
       </footer>
     </div>
+    </section>
+
+
   );
 }

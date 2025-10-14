@@ -4,7 +4,7 @@ export default function PaymentLicenseCMS() {
   const [paymentMethods, setPaymentMethods] = useState([
     { id: 1, src: "/images/Google.png", alt: "GPay", width: 60, height: 40 },
     { id: 2, src: "/images/Paytm.png", alt: "PayTM", width: 80, height: 40 },
-    { id: 4, src: "/images/upi.png", alt: "UPI", width: 50, height: 30 },
+    { id: 3, src: "/images/upi.png", alt: "UPI", width: 50, height: 30 },
   ]);
 
   const [contentList, setContentList] = useState([
@@ -19,6 +19,7 @@ export default function PaymentLicenseCMS() {
     width: 60,
     height: 40,
   });
+
   const [newContent, setNewContent] = useState("");
 
   const handleFileChange = (e) => {
@@ -29,7 +30,7 @@ export default function PaymentLicenseCMS() {
   };
 
   const addPaymentMethod = () => {
-    if (!newMethod.src || !newMethod.alt) {
+    if (!newMethod.src || !newMethod.alt.trim()) {
       alert("Please select an image and add alt text.");
       return;
     }
@@ -52,28 +53,29 @@ export default function PaymentLicenseCMS() {
   };
 
   return (
-    <section className="bg-[#0b0e15] text-white p-6 min-h-screen max-w-4xl mx-auto">
-      <div className="w-full max-w-6xl bg-[#111827] rounded-xl border border-gray-700 p-6 sm:p-8 md:p-10 grid grid-cols-1 md:grid-cols-2 gap-8 md:gap-10">
-        {/* ===== Payment Method Block ===== */}
-        <div>
-          <h3 className="text-white text-lg sm:text-xl font-semibold mb-4 text-center md:text-left">
-            Payment Method
-          </h3>
+    <section className="min-h-screen bg-white text-white py-12 px-6 md:pl-60 flex justify-center">
+      <div className="w-full max-w-6xl bg-[#0f172a] rounded-3xl shadow-2xl border border-slate-700 p-8 sm:p-12 space-y-10">
+
+        {/* ===== Payment Methods ===== */}
+        <div className="space-y-4">
+          <h2 className="text-white text-2xl font-bold text-center md:text-left">
+            Payment Methods
+          </h2>
 
           {/* Existing Methods */}
-          <div className="flex flex-wrap items-center justify-center md:justify-start gap-4 mb-6">
+          <div className="flex flex-wrap items-center justify-center md:justify-start gap-4">
             {paymentMethods.map((method) => (
-              <div key={method.id} className="relative inline-block">
+              <div key={method.id} className="relative group">
                 <img
                   src={method.src}
                   alt={method.alt}
                   width={method.width}
                   height={method.height}
-                  className="max-w-full h-auto rounded"
+                  className="max-w-full h-auto rounded border border-gray-600"
                 />
                 <button
                   onClick={() => deletePaymentMethod(method.id)}
-                  className="absolute -top-1 -right-1 text-xs bg-red-600 hover:bg-red-700 text-white px-1.5 rounded"
+                  className="absolute -top-2 -right-2 bg-red-600 hover:bg-red-700 text-white px-2 py-1 rounded opacity-0 group-hover:opacity-100 transition"
                   aria-label={`Delete ${method.alt}`}
                 >
                   ✕
@@ -83,67 +85,57 @@ export default function PaymentLicenseCMS() {
           </div>
 
           {/* Add New Payment Method */}
-          <div className="space-y-2 text-slate-300">
+          <div className="space-y-3 text-slate-300">
             <input
               type="file"
               accept="image/*"
               onChange={handleFileChange}
-              className="bg-gray-800 px-2 py-2 rounded w-full text-sm sm:text-base text-white"
+              className="bg-gray-800 px-3 py-2 rounded w-full text-white text-sm sm:text-base"
             />
-
             {newMethod.src && (
               <img
                 src={newMethod.src}
                 alt="Preview"
-                className="my-2 rounded border border-gray-600 w-32 sm:w-40 h-auto mx-auto md:mx-0"
+                className="w-32 sm:w-40 h-auto rounded border border-gray-600 mx-auto md:mx-0"
               />
             )}
-
             <input
-              className="bg-gray-800 px-2 py-2 rounded w-full text-sm sm:text-base"
               type="text"
               placeholder="Alt text"
               value={newMethod.alt}
-              onChange={(e) =>
-                setNewMethod({ ...newMethod, alt: e.target.value })
-              }
+              onChange={(e) => setNewMethod({ ...newMethod, alt: e.target.value })}
+              className="bg-gray-800 px-3 py-2 rounded w-full text-white text-sm sm:text-base"
             />
-
-            <div className="flex flex-col sm:flex-row gap-2">
+            <div className="flex gap-2 flex-col sm:flex-row">
               <input
-                className="bg-gray-800 px-2 py-2 rounded w-full sm:w-1/2 text-sm sm:text-base"
                 type="number"
                 placeholder="Width"
                 value={newMethod.width}
-                onChange={(e) =>
-                  setNewMethod({ ...newMethod, width: +e.target.value })
-                }
+                onChange={(e) => setNewMethod({ ...newMethod, width: +e.target.value })}
+                className="bg-gray-800 px-3 py-2 rounded w-full sm:w-1/2 text-white text-sm sm:text-base"
               />
               <input
-                className="bg-gray-800 px-2 py-2 rounded w-full sm:w-1/2 text-sm sm:text-base"
                 type="number"
                 placeholder="Height"
                 value={newMethod.height}
-                onChange={(e) =>
-                  setNewMethod({ ...newMethod, height: +e.target.value })
-                }
+                onChange={(e) => setNewMethod({ ...newMethod, height: +e.target.value })}
+                className="bg-gray-800 px-3 py-2 rounded w-full sm:w-1/2 text-white text-sm sm:text-base"
               />
             </div>
-
             <button
               onClick={addPaymentMethod}
-              className="mt-3 bg-green-600 hover:bg-green-700 transition px-4 py-2 rounded text-white w-full sm:w-auto"
+              className="mt-2 bg-green-600 hover:bg-green-700 text-white px-5 py-2 rounded font-semibold transition w-full sm:w-auto"
             >
               Add Payment Method
             </button>
           </div>
         </div>
 
-        {/* ===== Content Block ===== */}
-        <div className="text-slate-300 space-y-4 md:space-y-6 text-sm sm:text-base">
-          <h3 className="text-white text-lg sm:text-xl font-semibold text-center md:text-left">
+        {/* ===== License & Content ===== */}
+        <div className="space-y-4 text-slate-300">
+          <h2 className="text-white text-2xl font-bold text-center md:text-left">
             License & Content
-          </h3>
+          </h2>
 
           {contentList.map((text, index) => (
             <div key={index} className="flex items-start gap-2">
@@ -160,17 +152,17 @@ export default function PaymentLicenseCMS() {
           ))}
 
           {/* Add New Content */}
-          <div className="pt-2 sm:pt-4">
+          <div className="pt-2">
             <textarea
               rows={2}
-              className="bg-gray-800 text-white w-full p-2 rounded text-sm sm:text-base"
               placeholder="Add new point"
               value={newContent}
               onChange={(e) => setNewContent(e.target.value)}
+              className="bg-gray-800 text-white w-full p-2 rounded text-sm sm:text-base"
             />
             <button
               onClick={addContent}
-              className="mt-3 bg-green-600 hover:bg-green-700 transition px-4 py-2 rounded text-white w-full sm:w-auto"
+              className="mt-2 bg-green-600 hover:bg-green-700 text-white px-5 py-2 rounded font-semibold transition w-full sm:w-auto"
             >
               Add Content
             </button>
