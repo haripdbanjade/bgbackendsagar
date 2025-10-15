@@ -14,13 +14,13 @@ export default function Login() {
   const handleLogin = (e) => {
     e.preventDefault();
 
-    const validUsername = "bg678";
-    const validPassword = "bg678@123";
+    const validUsername = "BG678";
+    const validPassword = "BG678@123";
 
     if (email === validUsername && password === validPassword) {
       const userData = {
-        name: "bg678",
-        email: "bg678@gmail.com",
+        name: "BG678",
+        email: "BG678@gmail.com",
         role: "Admin",
       };
       login(userData);
@@ -32,8 +32,8 @@ export default function Login() {
 
   const handleGoogleLogin = () => {
     const googleUser = {
-      name: "bg678 (Google)",
-      email: "bg678@google.com",
+      name: "BG678 (Google)",
+      email: "BG678@google.com",
       role: "Admin",
     };
     login(googleUser);
