@@ -59,11 +59,11 @@ export default function GameCMS() {
   });
 
   return (
-    <section className="min-h-screen bg-white  text-white py-12 px-6 md:pl-60 flex justify-center">
+    <section className="min-h-screen bg-white text-white py-12 px-6 md:pl-60 flex justify-center">
       <div className="w-full max-w-6xl bg-[#0f172a] rounded-3xl shadow-2xl border border-slate-700 p-8 sm:p-12">
         <header className="flex flex-col sm:flex-row justify-between items-center mb-6 gap-4">
           <h1 className="text-2xl sm:text-3xl font-bold text-red-500 text-center sm:text-left">
-            Game CMS
+            Game CMS - BG678
           </h1>
           <button
             onClick={resetForm}
@@ -176,6 +176,11 @@ export default function GameCMS() {
             </tbody>
           </table>
         </div>
+
+        {/* Footer */}
+        <p className="text-center text-slate-500 text-sm mt-10">
+          © 2025 BG678 Admin Panel
+        </p>
       </div>
     </section>
   );

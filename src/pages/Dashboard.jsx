@@ -40,7 +40,7 @@ export default function Dashboard() {
 
   return (
     <div className="min-h-screen bg-white flex flex-col items-center justify-center w-full p-6 md:pl-60">
-      <div className="w-full max-w-7xl bg-[#0f172a] shadow-2xl rounded-3xl p-8 sm:p-12 border border-slate-700 text-white">
+      <div className="w-full max-w-7xl bg-[#0f172a] shadow-2xl rounded-3xl p-8 sm:p-12 border border-slate-700 text-white mb-50">
         {/* Header */}
         <div className="flex flex-col sm:flex-row items-center justify-between mb-10">
           <div className="flex items-center gap-6">

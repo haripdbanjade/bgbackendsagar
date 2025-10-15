@@ -79,7 +79,7 @@ export default function Blog() {
     <section className="min-h-screen bg-white py-12 px-6 md:pl-60 flex justify-center text-white">
       <div className="w-full max-w-6xl bg-slate-800 rounded-3xl shadow-2xl border border-gray-700 p-8 sm:p-12">
         <header className="flex justify-between mb-6 items-center">
-          <h1 className="text-2xl font-bold text-white">bg678 News</h1>
+          <h1 className="text-2xl font-bold text-white">BG678 News</h1>
           <button
             onClick={startAdd}
             className="bg-red-600 text-white px-4 py-2 rounded hover:bg-red-700 font-semibold transition duration-200"
